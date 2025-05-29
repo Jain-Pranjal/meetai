@@ -2,7 +2,6 @@
 import React from 'react'
 import { authClient } from "@/lib/auth-client"; 
 
-
 const page = () => {
 
   const [email, setEmail] = React.useState('');
@@ -10,6 +9,8 @@ const page = () => {
   const [name, setName] = React.useState('');
   const [image, setImage] = React.useState('');
   const [loading, setLoading] = React.useState(false);
+
+  const { data: session } = authClient.useSession()
 
   // Handle form submission for user registration
   const handleSubmit = async (e: React.FormEvent) => {
@@ -45,6 +46,8 @@ const page = () => {
 
   return (
     <div>
+      {session && <p className="text-center text-green-500">Welcome back, {session.user.name}!</p>}
+
     <div className="flex justify-center items-center min-h-screen bg-gray-100">
       <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
         <h2 className="text-2xl font-bold mb-6 text-center">Create Your Account</h2>

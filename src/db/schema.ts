@@ -46,7 +46,9 @@ export const verification = pgTable("verification", {
  updatedAt: timestamp('updated_at').$defaultFn(() => /* @__PURE__ */ new Date())
 				});
 
-
-
-
-                // hum alg se esko mogratet nhi karerge balki hum usko drizzle kke ke thopriugh he esko apni table me dalelhe so that humne vo kaam phelel he karrrkha ai ke hum apne schema ko db se drizzle ke thrigh he kaam karhge 
+export const FullSchema = {
+  user,
+  session,
+  account,
+  verification
+};

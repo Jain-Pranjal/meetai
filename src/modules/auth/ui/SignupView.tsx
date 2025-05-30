@@ -9,7 +9,6 @@ import { Github } from 'lucide-react';
 import { Chrome } from 'lucide-react';
 import Link from 'next/link'
 import { authClient } from '@/lib/auth-client'
-import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { toast } from "sonner"
 
@@ -37,11 +36,8 @@ const formSchema = z.object({
 
 
 const SignupView = () => {
-
-  const router = useRouter()
   const [error, setError] = useState<string | null>(null)
   const [pending, setPending] = useState(false)
-
 
 
   // defining the form
@@ -80,7 +76,6 @@ const SignupView = () => {
           id: "signup",
           duration: 5000,
         });
-        router.push("/");
       },
       onError: ({ error }) => {
         setPending(false);
@@ -94,6 +89,43 @@ const SignupView = () => {
     }
   );
 };
+
+
+  const onSocial = (provider: "github" | "google") => {
+  setError(null);
+
+  authClient.signIn.social({
+      provider: provider,
+      callbackURL: "/",
+    },
+    {
+      onRequest: () => {
+        setPending(true);
+        toast.loading("Signing up...", {
+          id: "signup",
+          duration: Infinity,
+        });
+      },
+      onSuccess: () => {
+        setPending(false);
+        toast.success("Signed up successfully", {
+          id: "signup",
+          duration: 5000,
+        });
+      },
+      onError: ({ error }) => {
+        setPending(false);
+        const errorMessage = error?.message || error?.error?.message || "An error occurred during sign-up";
+        setError(errorMessage);
+        toast.error(errorMessage, {
+          id: "signup",
+          duration: 5000,
+        });
+      },
+    }
+  );
+};
+
 
 
   return (
@@ -179,7 +211,7 @@ const SignupView = () => {
               disabled={pending}
               variant="outline" 
               className="w-full sm:w-40 flex items-center justify-center gap-2"
-              onClick={() => console.log("Google sign in")}
+              onClick={() => onSocial("google")}
             >
               <Chrome className="h-4 w-4" />
               Google
@@ -189,7 +221,7 @@ const SignupView = () => {
               type="button" 
               variant="outline" 
               className="w-full sm:w-40 flex items-center justify-center gap-2"
-              onClick={() => console.log("GitHub sign in")}
+              onClick={() => onSocial("github")}
             >
               <Github className="h-4 w-4" />GitHub
             </Button>

@@ -9,7 +9,6 @@ import { Github } from 'lucide-react';
 import { Chrome } from 'lucide-react';
 import Link from 'next/link'
 import { authClient } from '@/lib/auth-client'
-import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { toast } from "sonner"
 import {
@@ -32,7 +31,6 @@ const formSchema = z.object({
 
 const SigninView = () => {
 
-  const router = useRouter()
   const [error, setError] = useState<string | null>(null)
   const [pending, setPending] = useState(false)
 
@@ -72,7 +70,6 @@ const SigninView = () => {
           id: "signin",
           duration: 5000,
         });
-        router.push("/");
       },
       onError: ({ error }) => {
         setPending(false);
@@ -86,6 +83,42 @@ const SigninView = () => {
     }
   );
 };
+
+const onSocial = (provider: "github" | "google") => {
+  setError(null);
+
+  authClient.signIn.social({
+      provider: provider,
+      callbackURL: "/",
+    },
+    {
+      onRequest: () => {
+        setPending(true);
+        toast.loading("Signing in...", {
+          id: "signin",
+          duration: Infinity,
+        });
+      },
+      onSuccess: () => {
+        setPending(false);
+        toast.success("Signed in successfully", {
+          id: "signin",
+          duration: 5000,
+        });
+      },
+      onError: ({ error }) => {
+        setPending(false);
+        const errorMessage = error?.message || error?.error?.message || "An error occurred during sign-in";
+        setError(errorMessage);
+        toast.error(errorMessage, {
+          id: "signin",
+          duration: 5000,
+        });
+      },
+    }
+  );
+};
+
 
 
   return (
@@ -143,7 +176,7 @@ const SigninView = () => {
               disabled={pending}
               variant="outline" 
               className="w-full sm:w-40 flex items-center justify-center gap-2"
-              onClick={() => console.log("Google sign in")}
+              onClick={() => onSocial("google")}
             >
               <Chrome className="h-4 w-4" />
               Google
@@ -153,7 +186,7 @@ const SigninView = () => {
               type="button" 
               variant="outline" 
               className="w-full sm:w-40 flex items-center justify-center gap-2"
-              onClick={() => console.log("GitHub sign in")}
+              onClick={() => onSocial("github")}
             >
               <Github className="h-4 w-4" />GitHub
             </Button>

@@ -9,6 +9,7 @@ import { Github } from 'lucide-react';
 import { Chrome } from 'lucide-react';
 import Link from 'next/link'
 import { authClient } from '@/lib/auth-client'
+import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { toast } from "sonner"
 import {
@@ -31,6 +32,7 @@ const formSchema = z.object({
 
 const SigninView = () => {
 
+  const router = useRouter()
   const [error, setError] = useState<string | null>(null)
   const [pending, setPending] = useState(false)
 
@@ -70,6 +72,7 @@ const SigninView = () => {
           id: "signin",
           duration: 5000,
         });
+        router.push("/");
       },
       onError: ({ error }) => {
         setPending(false);

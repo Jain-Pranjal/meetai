@@ -1,6 +1,19 @@
 import React from 'react'
 import SignupView from '@/modules/auth/ui/SignupView'
-function SignUp() {
+import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
+import { redirect } from "next/navigation";
+async function SignUp() {
+
+  const session = await auth.api.getSession({
+      headers: await headers() 
+  })
+
+  if (session) {
+    // If the user is already signed up, redirect them to the home page
+    redirect("/");
+  }
+
   return (
     <div>
       <SignupView />

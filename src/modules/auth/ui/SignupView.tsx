@@ -9,6 +9,7 @@ import { Github } from 'lucide-react';
 import { Chrome } from 'lucide-react';
 import Link from 'next/link'
 import { authClient } from '@/lib/auth-client'
+import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { toast } from "sonner"
 
@@ -36,8 +37,11 @@ const formSchema = z.object({
 
 
 const SignupView = () => {
+
+  const router = useRouter()
   const [error, setError] = useState<string | null>(null)
   const [pending, setPending] = useState(false)
+
 
 
   // defining the form
@@ -76,6 +80,7 @@ const SignupView = () => {
           id: "signup",
           duration: 5000,
         });
+        router.push("/");
       },
       onError: ({ error }) => {
         setPending(false);

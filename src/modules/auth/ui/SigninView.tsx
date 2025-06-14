@@ -5,8 +5,8 @@ import {set, z} from 'zod'
 import {zodResolver} from '@hookform/resolvers/zod'
 import {useForm} from 'react-hook-form'
 import { Button } from "@/components/ui/button"
-import { Github } from 'lucide-react';
-import { Chrome } from 'lucide-react';
+import { FaGithub } from "react-icons/fa";
+import { FcGoogle } from "react-icons/fc";
 import Link from 'next/link'
 import { authClient } from '@/lib/auth-client'
 import { useRouter } from 'next/navigation'
@@ -181,7 +181,7 @@ const onSocial = (provider: "github" | "google") => {
               className="w-full sm:w-40 flex items-center justify-center gap-2"
               onClick={() => onSocial("google")}
             >
-              <Chrome className="h-4 w-4" />
+              <FcGoogle className="h-4 w-4" />
               Google
             </Button>
             <Button 
@@ -191,7 +191,7 @@ const onSocial = (provider: "github" | "google") => {
               className="w-full sm:w-40 flex items-center justify-center gap-2"
               onClick={() => onSocial("github")}
             >
-              <Github className="h-4 w-4" />GitHub
+              <FaGithub className="h-4 w-4" />GitHub
             </Button>
             </div>
           </div>

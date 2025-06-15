@@ -1,6 +1,6 @@
 import React from 'react'
 import SigninView from '@/modules/auth/ui/SigninView'
-import { auth } from "@/lib/auth";
+import { auth } from "@/lib/auth";  //server instance of auth
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 async function SignIn() {

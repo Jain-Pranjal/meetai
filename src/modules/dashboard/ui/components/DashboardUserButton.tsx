@@ -30,9 +30,6 @@ export const DashboardUserButton = () => {
     const router = useRouter()
     const { isMobile, state } = useSidebar()
     const { data, isPending } = authClient.useSession()
-
-
-    // jok aakpa side bar hai 
     
     if (isPending || !data?.user) {
         return null
@@ -45,8 +42,9 @@ export const DashboardUserButton = () => {
             }
         })
     }
-// we are using the state of the sidebar to determine if it is collapsed or not 
-// state can be expanded and collapsed
+
+    // we are using the state of the sidebar to determine if it is collapsed or not
+    // state can be expanded and collapsed
     const isCollapsed = state === "collapsed"
 
     // User avatar component
@@ -91,11 +89,10 @@ export const DashboardUserButton = () => {
                 <DrawerTitle>{data.user.name}</DrawerTitle>
                 <DrawerDescription>{data.user.email}</DrawerDescription>
             </DrawerHeader>
-            
             <div className="px-4 space-y-2">
                 <Button 
-                    variant="ghost" 
-                    className='w-full justify-between h-10 font-normal'
+                    variant="outline"
+                    className='w-full justify-between h-10 font-normal border border-muted-foreground/20'
                 >
                     Billing 
                     <CreditCardIcon className='ml-auto size-4' />
@@ -103,7 +100,7 @@ export const DashboardUserButton = () => {
 
                 <Button 
                     variant="destructive" 
-                    className='w-full justify-between h-10 font-normal'
+                    className='w-full justify-between h-10 font-normal border border-destructive/30'
                     onClick={handleLogout}
                 >
                     Logout 

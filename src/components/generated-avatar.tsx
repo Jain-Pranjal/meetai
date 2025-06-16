@@ -22,7 +22,7 @@ export const generatedAvatar = ({ seed, className, variant }: GeneratedAvatarPro
         throw new Error('Invalid variant provided');
     }
     
-   
+    // Return the Avatar component with the generated image
     return (
         <Avatar className={cn(className)}>
         <AvatarImage src={avatar.toDataUri()} alt='Generated Avatar' />

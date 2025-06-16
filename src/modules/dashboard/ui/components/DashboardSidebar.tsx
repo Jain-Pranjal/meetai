@@ -9,110 +9,128 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  useSidebar,
 } from "@/components/ui/sidebar"
 import Link from "next/link"
 import Image from "next/image"
-import { BotIcon, VideoIcon,StarIcon } from "lucide-react"
+import { BotIcon, VideoIcon, StarIcon } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { usePathname } from "next/navigation"
 import { Separator } from "@/components/ui/separator"
-import  {DashboardUserButton}  from "./DashboardUserButton"
+import { DashboardUserButton } from "./DashboardUserButton"
 
-
-const firstSection=[
+const firstSection = [
     {
-        icon:VideoIcon,
-        label:"Meetings",
-        href:"/meetings"
+        icon: VideoIcon,
+        label: "Meetings",
+        href: "/meetings"
     },
     {
-        icon:BotIcon,
-        label:"Agent",
-        href:"/agent"
+        icon: BotIcon,
+        label: "Agent",
+        href: "/agent"
     }
 ]
 
-const secondSection=[
+const secondSection = [
     {
-        icon:StarIcon,
-        label:"Upgrade",
-        href:"/upgrade"
+        icon: StarIcon,
+        label: "Upgrade",
+        href: "/upgrade"
     }
 ]
-
 
 export const DashboardSidebar = () => {
-    const pathname=usePathname()
-        return (
+    const pathname = usePathname()
+    const { state, isMobile } = useSidebar()
+    const isCollapsed = state === "collapsed" && !isMobile // Don't collapse on mobile
+
+    return (
         <Sidebar collapsible="icon" variant="sidebar">
-            <SidebarContent className="">
-            {/* Logo at the top of sidebar */}
-            <div className="flex justify-center items-center p-4 mb-4">
-                <Link href="/">
-                    <div className="flex items-center">
+            <SidebarContent>
+                {/* Logo at the top of sidebar */}
+                <div className={cn(
+                    "flex p-4 mb-4 transition-all duration-200",
+                    isCollapsed ? "justify-center" : "justify-center"
+                )}>
+                    <Link href="/" className={cn(
+                        "flex items-center gap-2",
+                        isCollapsed ? "justify-center" : "justify-center"
+                    )}>
                         <Image 
-                        src="/appLogo.svg" 
-                        alt="MeetAI Logo" 
-                        className="h-8 mr-2"
-                        width={32}
-                        height={32}
-                        priority
+                            src="/appLogo.svg" 
+                            alt="MeetAI Logo" 
+                            className="h-8 w-8 shrink-0"
+                            width={32}
+                            height={32}
+                            priority
                         />
-                        <span className="font-bold text-lg">Meet AI</span>
-                    </div>
-                </Link>
-            </div>
-
-            <SidebarGroup>
-                <SidebarMenu>
-                {firstSection.map((item) => (
-                    <SidebarMenuItem key={item.label}>
-                    <Link href={item.href}>
-                        <SidebarMenuButton 
-                        className={cn("h-10 hover:bg-linear-to-r/oklch border border-transparent hover:border-[#5D6B68]/10 from-sidebar-accent from-5% via-30% via-sidebar/50 to-sidebar/50",
-                            pathname === item.href && "bg-linear-to-r/oklch border-[#5D6B68]/10 from-sidebar-accent from-5% via-30% via-sidebar/50 to-sidebar/50")}
-                            isActive={pathname === item.href}>
-                        <item.icon className="h-4 w-4 mr-2" />
-                        {item.label}
-                        </SidebarMenuButton>
+                        {(isMobile || !isCollapsed) && (
+                            <span className="font-bold text-lg whitespace-nowrap">
+                                Meet AI
+                            </span>
+                        )}
                     </Link>
-                    </SidebarMenuItem>
-                ))}
-                </SidebarMenu>
-            </SidebarGroup>
- 
+                </div>
 
-            <div className="px-4 py-2">
-                <Separator className="opacity-70 h-[2px] bg-slate-300 dark:bg-slate-600 my-2" />
-            </div>
+                <SidebarGroup>
+                    <SidebarMenu>
+                        {firstSection.map((item) => (
+                            <SidebarMenuItem key={item.label}>
+                                <SidebarMenuButton 
+                                    asChild
+                                    className={cn(
+                                        "h-10 hover:bg-linear-to-r/oklch border border-transparent hover:border-[#5D6B68]/10 from-sidebar-accent from-5% via-30% via-sidebar/50 to-sidebar/50",
+                                        pathname === item.href && "bg-linear-to-r/oklch border-[#5D6B68]/10 from-sidebar-accent from-5% via-30% via-sidebar/50 to-sidebar/50"
+                                    )}
+                                    isActive={pathname === item.href}
+                                >
+                                    <Link href={item.href}>
+                                        <item.icon className="h-4 w-4" />
+                                        <span>{item.label}</span>
+                                    </Link>
+                                </SidebarMenuButton>
+                            </SidebarMenuItem>
+                        ))}
+                    </SidebarMenu>
+                </SidebarGroup>
 
-            
-            <SidebarGroup>
-                <SidebarGroupLabel>Plan</SidebarGroupLabel>
-                <SidebarGroupContent>
-                <SidebarMenu>
-                    {secondSection.map((item) => (
-                    <SidebarMenuItem key={item.label}>
-                        <Link href={item.href}>
-                        <SidebarMenuButton>
-                            <item.icon className="h-4 w-4 mr-2" />
-                            {item.label}
-                        </SidebarMenuButton>
-                        </Link>
-                    </SidebarMenuItem>
-                    ))}
-                </SidebarMenu>
-                </SidebarGroupContent>
-            </SidebarGroup>
+                {/* Show separator on mobile or when not collapsed on desktop */}
+                {(isMobile || !isCollapsed) && (
+                    <div className="px-4">
+                        <Separator className="opacity-70 h-[2px] bg-slate-300 dark:bg-slate-600 my-2" />
+                    </div>
+                )}
+
+                <SidebarGroup>
+                    {/* Show group label on mobile or when not collapsed on desktop */}
+                    {(isMobile || !isCollapsed) && <SidebarGroupLabel>Plan</SidebarGroupLabel>}
+                    <SidebarGroupContent>
+                        <SidebarMenu>
+                            {secondSection.map((item) => (
+                                <SidebarMenuItem key={item.label}>
+                                    <SidebarMenuButton asChild>
+                                        <Link href={item.href}>
+                                            <item.icon className="h-4 w-4" />
+                                            <span>{item.label}</span>
+                                        </Link>
+                                    </SidebarMenuButton>
+                                </SidebarMenuItem>
+                            ))}
+                        </SidebarMenu>
+                    </SidebarGroupContent>
+                </SidebarGroup>
+
             </SidebarContent>
 
-
-
-            {/* showing the user information */}
-            <SidebarFooter className="p-3 w-full">
+            {/* User information in footer */}
+            <SidebarFooter className="p-3">
                 <DashboardUserButton />
             </SidebarFooter>
-
         </Sidebar>
     )
 }
+
+
+
+// also we are storing the state of the sidebar so that it will be stored in the cookies

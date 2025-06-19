@@ -21,3 +21,5 @@ export function makeQueryClient() {
     },
   });
 }
+
+// here is the tanstack setup in the client side

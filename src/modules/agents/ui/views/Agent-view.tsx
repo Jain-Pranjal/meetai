@@ -5,7 +5,7 @@ import { Loading } from "@/components/Loading"
 import { Error } from "@/components/Error-state"
 
 
-
+// as the data is prefetched in the server component we can use the useSuspenseQuery hook to get the data directly in the client component as it already has the data in the cache
 
 export const AgentView = () => {
     const trpc = useTRPC()

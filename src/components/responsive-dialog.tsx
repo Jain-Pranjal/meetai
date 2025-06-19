@@ -1,5 +1,10 @@
+// we have made this component so that on mobile screen it will use a drawer and on desktop it will use a dialog
+
 "use client"
 import { useIsMobile } from "@/hooks/use-mobile"
+// the useMobile hook is used to determine if the screen is mobile or not
+
+
 import {
   Drawer,
   DrawerClose,

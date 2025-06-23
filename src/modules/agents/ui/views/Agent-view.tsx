@@ -8,10 +8,12 @@ import {columns} from "@/modules/agents/ui/components/Columns"
 import { EmptyState } from "@/components/EmptyState"
 import { useAgentsFilter } from "../../hooks/use-agents-filter"
 import { DataPagination } from "@/modules/agents/ui/components/DataPagination"
+import { useRouter } from "next/navigation"
 
 // as the data is prefetched in the server component we can use the useSuspenseQuery hook to get the data directly in the client component as it already has the data in the cache
 
 export const AgentView = () => {
+    const router=useRouter()
     const [filters,setFilters]=useAgentsFilter()
 
     const trpc = useTRPC()
@@ -24,6 +26,9 @@ export const AgentView = () => {
             <DataTable
                 columns={columns}
                 data={data.items}
+                onRowClick={(row) => {
+                    router.push(`/agent/${row.id}`);
+                }}
             />
             <DataPagination
                 page={filters.page}

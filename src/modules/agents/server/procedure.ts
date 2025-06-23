@@ -5,6 +5,7 @@ import { agentInsertSchema } from "../schema";
 import { z } from "zod";
 import { eq, sql , getTableColumns, and, ilike,desc,count} from "drizzle-orm";
 import { DEFAULT_PAGE,MIN_PAGE_SIZE,MAX_PAGE_SIZE,DEFAULT_PAGE_SIZE } from "@/constants";
+import { TRPCError } from "@trpc/server";
 
 // this is specifically the procedure for the agents module
 // as u can see we are also setting the type of the input and output using zod schema that the api will accept ensuring type safety and validation
@@ -53,12 +54,20 @@ export const agentsRouter = createTRPCRouter({
 
 
     // fetch a single agent by id
-    getOne:protectedProcedure.input(z.object({ id: z.string() })).query(async ({ input }) => {
+    getOne:protectedProcedure.input(z.object({ id: z.string() })).query(async ({ input, ctx }) => {
         const [existingAgent] = await db.select({
             ...getTableColumns(agents),
             meetingCount: sql<number>`5`
         }).from(agents)
-        .where(eq(agents.id, input.id));
+        .where(and(
+            eq(agents.id, input.id),
+            eq(agents.userId, ctx.auth.session.userId))
+        );
+
+        if (!existingAgent) {
+            throw new TRPCError({code: "NOT_FOUND", message: "Agent not found"});
+        }
+        
         return existingAgent;
     }),
 

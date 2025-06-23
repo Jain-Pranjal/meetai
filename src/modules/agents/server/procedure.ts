@@ -1,7 +1,7 @@
 import { createTRPCRouter, protectedProcedure } from "@/trpc/init";
 import { db } from "@/db";
 import { agents } from "@/db/schema";
-import { agentInsertSchema } from "../schema";
+import { agentInsertSchema, agentUpdateSchema } from "../schema";
 import { z } from "zod";
 import { eq, sql , getTableColumns, and, ilike,desc,count} from "drizzle-orm";
 import { DEFAULT_PAGE,MIN_PAGE_SIZE,MAX_PAGE_SIZE,DEFAULT_PAGE_SIZE } from "@/constants";
@@ -85,8 +85,51 @@ export const agentsRouter = createTRPCRouter({
         })
         .returning();
         return createdAgent;
+    }),
+
+
+    remove:protectedProcedure.input(z.object({ id: z.string() }))
+    .mutation(async ({ input, ctx }) => {
+        const { id } = input;
+        const [removedAgent] = await db.delete(agents)
+        .where(and(eq(agents.id, id), eq(agents.userId, ctx.auth.session.userId)))
+        .returning();
+
+        if (!removedAgent) {
+            throw new TRPCError({ code: "NOT_FOUND", message: "Agent not found" });
+        }
+
+        return removedAgent;
+    }),
+
+
+    update:protectedProcedure.input(agentUpdateSchema
+    ).mutation(async ({ input, ctx }) => {
+        const { id, name, instructions } = input;
+
+        const [updatedAgent] = await db.update(agents)
+        .set({
+            name,
+            instructions
+        })
+        .where(and(eq(agents.id, id), eq(agents.userId, ctx.auth.session.userId)))
+        .returning();
+
+        if (!updatedAgent) {
+            throw new TRPCError({ code: "NOT_FOUND", message: "Agent not found" });
+        }
+
+        return updatedAgent;
     })
+
+
+
+
 });
+
+
+
+
 
 
 // we need to pass array as drizzle expects an array of objects to insert

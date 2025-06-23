@@ -9,3 +9,9 @@ export const agentInsertSchema = z.object({
 
 
 // bascially we need only name and instructions for the agent to be created so we are defining the schema for that
+
+
+
+export const agentUpdateSchema = agentInsertSchema.extend({
+    id: z.string().min(1, 'Agent ID is required'),
+});

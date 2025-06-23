@@ -42,9 +42,6 @@ export const AgentForm: React.FC<AgentFormProps> = ({onSuccess,onCancel,initialV
             onSuccess:async()=>{
                 await queryClient.invalidateQueries(trpc.agents.getMany.queryOptions({}));
 
-                if(initialValues?.id) {
-                    await queryClient.invalidateQueries(trpc.agents.getOne.queryOptions({ id: initialValues.id }));
-                }
                 
                 onSuccess?.();
             },
@@ -58,6 +55,30 @@ export const AgentForm: React.FC<AgentFormProps> = ({onSuccess,onCancel,initialV
     );
 
 
+
+
+    const updateAgent=useMutation(
+        trpc.agents.update.mutationOptions({
+            onSuccess:async()=>{
+                await queryClient.invalidateQueries(trpc.agents.getMany.queryOptions({}));
+
+                if(initialValues?.id) {
+                    await queryClient.invalidateQueries(trpc.agents.getOne.queryOptions({ id: initialValues.id }));
+                }
+                
+                onSuccess?.();
+            },
+
+            onError: (error) => {
+                toast.error(error.message || "Failed to update agent");
+            }
+        })
+    );
+
+
+
+
+
     // using the same schema that we used to define input in api call
     const form=useForm<z.infer<typeof agentInsertSchema>>({
         resolver:zodResolver(agentInsertSchema),
@@ -68,13 +89,12 @@ export const AgentForm: React.FC<AgentFormProps> = ({onSuccess,onCancel,initialV
     });
 
     const isEdit=!!initialValues?.id;
-    const isPending=createAgent.isPending;
+    const isPending=createAgent.isPending || updateAgent.isPending;
+
 
     const onSubmit=(values : z.infer<typeof agentInsertSchema>) => {
         if (isEdit) {
-            // Handle update logic here
-            console.log("Updating agent with values:", values);
-
+            updateAgent.mutate({ id: initialValues.id, ...values });
         } else {
             createAgent.mutate(values);
         }

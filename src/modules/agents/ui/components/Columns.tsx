@@ -19,7 +19,7 @@ export const columns: ColumnDef<AgentGetOne>[] = [
             variant: "botttsNeutral",
             className: "border size-8",
           })}
-          <span className="capitalize font-medium">{row.original.name}</span>
+          <span className="capitalize font-semibold">{row.original.name}</span>
         </div>
 
         <div className="flex items-center gap-x-2">

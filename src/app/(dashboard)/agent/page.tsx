@@ -10,7 +10,18 @@ import { auth } from '@/lib/auth'
 import { redirect } from 'next/navigation'
 import { headers } from 'next/headers'
 
-async function page() {
+import { SearchParams } from 'nuqs';
+import { loadSearchParams } from '@/modules/agents/params';
+
+
+interface Props{
+  searchParams:Promise<SearchParams>
+}
+
+
+async function page({searchParams}: Props) {
+  const filters = await loadSearchParams(searchParams);
+
 
   const session = await auth.api.getSession({
       headers: await headers() 
@@ -22,7 +33,9 @@ async function page() {
 
   // we will use the server components to prefetch the data and then store in cache to get access to it in the client component
   const queryClient=getQueryClient()
-  void queryClient.prefetchQuery(trpc.agents.getMany.queryOptions())
+  void queryClient.prefetchQuery(trpc.agents.getMany.queryOptions({
+      ...filters
+  }))
 
 
 

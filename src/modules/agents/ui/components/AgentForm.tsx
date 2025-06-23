@@ -40,7 +40,7 @@ export const AgentForm: React.FC<AgentFormProps> = ({onSuccess,onCancel,initialV
     const createAgent=useMutation(
         trpc.agents.create.mutationOptions({
             onSuccess:async()=>{
-                await queryClient.invalidateQueries(trpc.agents.getMany.queryOptions());
+                await queryClient.invalidateQueries(trpc.agents.getMany.queryOptions({}));
 
                 if(initialValues?.id) {
                     await queryClient.invalidateQueries(trpc.agents.getOne.queryOptions({ id: initialValues.id }));
@@ -58,6 +58,7 @@ export const AgentForm: React.FC<AgentFormProps> = ({onSuccess,onCancel,initialV
     );
 
 
+    // using the same schema that we used to define input in api call
     const form=useForm<z.infer<typeof agentInsertSchema>>({
         resolver:zodResolver(agentInsertSchema),
         defaultValues:{

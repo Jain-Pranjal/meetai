@@ -23,7 +23,8 @@ export const NewAgentDialog = ({ open, onOpenChange }: NewAgentDialogProps) => {
         createdAt: "",
         updatedAt: "",
         userId: "",
-        instructions: ""
+        instructions: "",
+        meetingCount: 0,
       }}
       />
       {/* we will add the proper form to interact with the db to send the data to the db later on */}

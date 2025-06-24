@@ -10,7 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { VideoIcon } from "lucide-react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
-import { useConfirm } from "../../hooks/use-confirm";
+import { useConfirm } from "../../../../hooks/use-confirm";
 import { useState } from "react";
 import { UpdateAgentDialog } from "../components/UpdateAgentDialog";
 

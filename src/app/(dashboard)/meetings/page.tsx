@@ -6,8 +6,24 @@ import { getQueryClient, trpc } from '@/trpc/server'
 import { dehydrate, HydrationBoundary } from '@tanstack/react-query'
 import { ErrorBoundary } from "react-error-boundary";
 import { MeetingsViewLoading,MeetingsViewError,MeetingsView } from "@/modules/meetings/ui/views/MeetingsView";
-const page = () => {
+import { MeetingListHeader } from '@/modules/meetings/ui/components/MeetingsListHeader';
+import { auth } from '@/lib/auth'
+import { redirect } from 'next/navigation'
+import { headers } from 'next/headers'
 
+
+
+const page = async() => {
+
+
+  const session = await auth.api.getSession({
+        headers: await headers() 
+    })
+    
+    if(!session) {
+      redirect("/sign-in");
+    }
+  
 
   const queryClient=getQueryClient();
   // prefetching the data for the meetings view
@@ -17,7 +33,7 @@ const page = () => {
 
   return (
     <>
-    {/* <MeetingListHeader/> */}
+    <MeetingListHeader/>
     <HydrationBoundary state={dehydrate(queryClient)}>
       <Suspense fallback={<MeetingsViewLoading />}>
         <ErrorBoundary fallback={<MeetingsViewError />}>
@@ -29,3 +45,5 @@ const page = () => {
     </>
   )
 }
+
+export default page;

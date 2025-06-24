@@ -1,7 +1,7 @@
 
 // this dialog is used to update an agent
 
-import ResponsiveDialog from "@/components/responsive-dialog";
+import ResponsiveDialog from "@/components/ResponsiveDialog";
 import {AgentForm} from "@/modules/agents/ui/components/AgentForm";
 import { AgentGetOne } from "../../types";
 interface UpdateAgentDialogProps {

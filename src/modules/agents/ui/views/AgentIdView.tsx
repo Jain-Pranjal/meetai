@@ -3,7 +3,7 @@
 import { useTRPC } from "@/trpc/client";
 import { useMutation, useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
 import { Loading } from "@/components/Loading";
-import { Error } from "@/components/Error-state";
+import { Error } from "@/components/ErrorState";
 import { AgentIdViewHeader } from "@/modules/agents/ui/components/AgentIdViewHeader";
 import { generatedAvatar } from "@/components/generated-avatar";
 import { Badge } from "@/components/ui/badge";

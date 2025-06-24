@@ -2,7 +2,7 @@
 import {  useSuspenseQuery } from "@tanstack/react-query"
 import { useTRPC } from "@/trpc/client"
 import { Loading } from "@/components/Loading"
-import { Error } from "@/components/Error-state"
+import { Error } from "@/components/ErrorState"
 import { DataTable } from "@/modules/agents/ui/components/DataTable"
 import {columns} from "@/modules/agents/ui/components/Columns"
 import { EmptyState } from "@/components/EmptyState"

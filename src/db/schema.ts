@@ -87,5 +87,6 @@ export const FullSchema = {
   session,
   account,
   verification,
-  agents
+  agents,
+  meetings
 };

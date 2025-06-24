@@ -3,7 +3,7 @@
 import { useTRPC } from "@/trpc/client";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Loading } from "@/components/Loading";
-import { Error } from "@/components/Error-state";
+import { Error } from "@/components/ErrorState";
 
 export const MeetingsView=()=>{
 

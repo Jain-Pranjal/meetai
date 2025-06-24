@@ -7,7 +7,7 @@ import { DataTable } from "@/components/DataTable"
 import {columns} from "@/modules/agents/ui/components/Columns"
 import { EmptyState } from "@/components/EmptyState"
 import { useAgentsFilter } from "../../hooks/use-agents-filter"
-import { DataPagination } from "@/modules/agents/ui/components/DataPagination"
+import { DataPagination } from "@/components/DataPagination"
 import { useRouter } from "next/navigation"
 
 // as the data is prefetched in the server component we can use the useSuspenseQuery hook to get the data directly in the client component as it already has the data in the cache

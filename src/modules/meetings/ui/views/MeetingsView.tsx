@@ -7,19 +7,37 @@ import { Error } from "@/components/ErrorState";
 import { DataTable } from "@/components/DataTable";
 import {columns} from "@/modules/meetings/ui/components/Columns";
 import { EmptyState } from "@/components/EmptyState";
+import { useRouter } from "next/navigation";
+import { useMeetingsFilter } from "../../hooks/use-meetings-filter";
+import { DataPagination } from "@/components/DataPagination";
 
 export const MeetingsView=()=>{
 
     const trpc= useTRPC();
+    const router=useRouter();
+    const [filters, setFilters] =useMeetingsFilter();
+
+
     const { data } = useSuspenseQuery(
-        trpc.meetings.getMany.queryOptions({})
+        trpc.meetings.getMany.queryOptions({
+            ...filters,
+        })
     );
 
 
     return (
         <div className="flex-1 pb-4 md:px-8 px-4 flex flex-col gap-y-4">
             <DataTable data={data.items}
-            columns={columns}/>
+            columns={columns}
+            onRowClick={(row) => {
+                router.push(`/meetings/${row.id}`);
+            }}/>
+
+            <DataPagination
+                page={filters.page}
+                totalPages={data.totalPages}
+                onPageChange={(page) => setFilters({ ...filters, page })}
+            />
 
         {data.items.length === 0 && (
         <EmptyState title="No Meetings Found" description="Schedule a meeting to connect with others. Each meeting lets you collaborate, share ideas and interact with participants during the call." />

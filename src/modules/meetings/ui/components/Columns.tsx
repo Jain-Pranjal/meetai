@@ -58,7 +58,7 @@ export const columns: ColumnDef<MeetingGetMany[number]>[] = [
           {generatedAvatar({
             seed: row.original.agent.name || "User",
             variant: "botttsNeutral",
-            className: "border size-8",
+            className: "border size-4",
           })}
           <span className="text-sm text-muted-foreground">{row.original.startedAt ? format(row.original.startedAt,"MMM d") : ""}</span>
         </div>

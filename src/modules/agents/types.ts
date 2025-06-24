@@ -2,6 +2,7 @@ import { inferRouterOutputs } from "@trpc/server";
 import { AppRouter } from "@/trpc/routers/_app";
 
 export type AgentGetOne = inferRouterOutputs<AppRouter>["agents"]["getOne"];
+export type AgentGetMany = inferRouterOutputs<AppRouter>["agents"]["getMany"]["items"];
 
 // we are getting the type fo the getOne from the agents router which have all the procedures defined in it
 

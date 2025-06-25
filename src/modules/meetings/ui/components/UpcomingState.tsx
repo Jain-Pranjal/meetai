@@ -20,7 +20,7 @@ export const UpcomingState = ({ meetingId, onCancel, isCanceling }: Props) => {
         image="/upcoming.svg"
       />
 
-        <div className="flex flex-col-reverse lg:flex-row lg:justify-center items-center gap-2 w-full" >
+        <div className="flex flex-col-reverse lg:flex-row lg:justify-center items-center gap-6 w-full pt-3" >
 
             <Button
               variant="secondary"

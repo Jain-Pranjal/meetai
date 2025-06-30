@@ -3,7 +3,7 @@ import { Input } from "@/components/ui/input";
 import { useAgentsFilter } from "../../hooks/use-agents-filter";
 
 export const AgentsSearchFilter=()=>{
-    const [filters, setFilters] = useAgentsFilter();
+    const [filters, setFilters] = useAgentsFilter();  //making the state using the nuqs hook 
 
     return (
         <div className="relative">

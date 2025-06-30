@@ -14,8 +14,8 @@ import { loadSearchParams } from '@/modules/meetings/params';
 import { SearchParams } from 'nuqs/server';
 
 
-interface PageProps {  searchParams: SearchParams;}
-
+interface PageProps {  searchParams: Promise<SearchParams>;}
+// params are always a promise in server components, so we need to await it
 
 const page = async({ searchParams }: PageProps) => {
   const filters= await loadSearchParams(searchParams)

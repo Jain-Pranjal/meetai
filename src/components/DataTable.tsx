@@ -62,3 +62,6 @@ export function DataTable<TData, TValue>({
     </div>
   )
 }
+
+
+// This is the structure of the DataTable component 

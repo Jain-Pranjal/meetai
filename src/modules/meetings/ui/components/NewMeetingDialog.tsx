@@ -35,3 +35,5 @@ export const NewMeetingDialog = ({ open, onOpenChange }: NewMeetingDialogProps) 
 
 
 // this dialog is used to open the form of the meeting
+
+// open and onOpenChange are used to control the dialog state so it can be close by the form also as we are passing the state of the dialog only 

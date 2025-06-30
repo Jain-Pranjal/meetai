@@ -1,4 +1,7 @@
 // taken from shadcn
+
+
+// Here is the actual data inside the {row} that will be used in the DataTable component to render the columns for the agents list
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";

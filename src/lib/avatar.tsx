@@ -18,6 +18,8 @@ export const  generatedAvatarURI = ({ seed, variant }: AvatarProps) => {
     } else if (variant === "initials") {
         avatar = createAvatar(initials, {
             seed,
+            fontWeight:500,
+            fontSize:42
         });
     }
     else {
@@ -26,3 +28,5 @@ export const  generatedAvatarURI = ({ seed, variant }: AvatarProps) => {
 
     return avatar.toDataUri();
 };
+
+//this will be used to generate the avatar URI based on the seed and variant provide for the Stream call UI

@@ -1,3 +1,6 @@
+// This form will open the new form with initial values nothing as it is a new agent dialog
+
+
 import ResponsiveDialog from "@/components/ResponsiveDialog";
 import {AgentForm} from "@/modules/agents/ui/components/AgentForm";
 interface NewAgentDialogProps {
@@ -15,8 +18,8 @@ export const NewAgentDialog = ({ open, onOpenChange }: NewAgentDialogProps) => {
     >
 
      <AgentForm
-      onSuccess={() => {onOpenChange(false);}}
-      onCancel={() => {onOpenChange(false);}}
+      onSuccess={() => {onOpenChange(false);}} //it will close the dialog on success
+      onCancel={() => {onOpenChange(false);}}  //it will close the dialog on cancel
       initialValues={{
         id: "",
         name: "",
@@ -27,7 +30,6 @@ export const NewAgentDialog = ({ open, onOpenChange }: NewAgentDialogProps) => {
         meetingCount: 0,
       }}
       />
-      {/* we will add the proper form to interact with the db to send the data to the db later on */}
 
     </ResponsiveDialog>
   );

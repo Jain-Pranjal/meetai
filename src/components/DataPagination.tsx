@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button"
 interface DataPaginationProps {
     page:number,
     totalPages:number,
-    onPageChange:(page:number)=>void
+    onPageChange:(page:number)=>void // will change the filter page number
 }
 
 

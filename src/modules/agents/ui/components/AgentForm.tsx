@@ -87,6 +87,8 @@ export const AgentForm: React.FC<AgentFormProps> = ({onSuccess,onCancel,initialV
             instructions:initialValues?.instructions ?? ""
         }
     });
+// here we are pre populating the form with the initial values if they are provided, otherwise we are using empty strings as default values
+
 
     const isEdit=!!initialValues?.id;
     const isPending=createAgent.isPending || updateAgent.isPending;

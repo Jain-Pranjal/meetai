@@ -41,7 +41,7 @@ export const CommandSelect = ({
   const selectedOption = options.find((option) => option.value === value);
 
   const handleOpenChange = (open: boolean) => {
-    onSearch?.("");
+    onSearch?.("");  //to reset the search when the dialog opens
     setOpen(open);
   };
 
@@ -62,7 +62,7 @@ export const CommandSelect = ({
       </Button>
 
       <CommandResponsiveDialog
-       open={open} onOpenChange={handleOpenChange} shouldFilter={!onSearch}>
+       open={open} onOpenChange={handleOpenChange} shouldFilter={!onSearch}> {/*it will not do internal filtering , it will do according to our */}
         <CommandInput placeholder="Search..." onValueChange={onSearch} />
 
         <CommandList>

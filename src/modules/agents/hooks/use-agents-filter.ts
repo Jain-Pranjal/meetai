@@ -8,5 +8,7 @@ export const useAgentsFilter = () => {
     })
 }
 
-
+// nuqs is used to sync the search params with the useState
 // we have made the hook that is respsonsible for managing the state of the filters as it contains the search and page number made by the useQueryStates hook
+
+// so basically the concept is that we need to make the use of the same state everywhere 

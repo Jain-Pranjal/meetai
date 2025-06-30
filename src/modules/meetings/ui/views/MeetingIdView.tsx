@@ -38,7 +38,8 @@ export const MeetingIdView = ({ meetingId }: Props) => {
   const isUpcoming = data.status === "upcoming";
   const isProcessing = data.status === "processing";
 
-
+  
+// api call to remove the meeting
 const removeMeeting= useMutation(trpc.meetings.remove.mutationOptions({
     onSuccess: async() => {
       await queryClient.invalidateQueries(trpc.meetings.getMany.queryOptions({}));

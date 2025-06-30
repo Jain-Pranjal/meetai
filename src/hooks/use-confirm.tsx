@@ -9,7 +9,7 @@ export const useConfirm = (
   description: string
 ): [() => JSX.Element, () => Promise<unknown>] => {
 
-  const [promise, setPromise] = useState<{ resolve: (value: boolean) => void; } | null>(null);
+  const [promise, setPromise] = useState<{ resolve: (value: boolean) => void; } | null>(null);   //it either take the function with boolean value or null
 
   const confirm = () => {
     return new Promise((resolve) => {
@@ -58,6 +58,9 @@ export const useConfirm = (
 
   return [ConfirmationDialog, confirm];
 };
+
+// the confirmationDialog is the jsx element
+// the confirm function returns a promise that resolves to true or false based on the user's action
 
 
 

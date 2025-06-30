@@ -8,10 +8,12 @@ import { CallView } from "@/modules/call/ui/views/CallView";
 
 
 interface Props{
-    params:Promise<{
+    params: Promise<{
         meetingId: string;
     }>
 }
+
+// we have use the meetingId as the params beause in the procedure we use the same meetingid to make the stream call so both are the same as meeting is the call only
 
 
 const Page=async ({params}:Props) => {

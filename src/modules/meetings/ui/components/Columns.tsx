@@ -11,7 +11,7 @@ import { CircleCheckIcon,CircleXIcon,ClockArrowUpIcon,ClockFadingIcon,CornerDown
 import { cn } from "@/lib/utils";
 
 
-
+// this function formats the duration in seconds to a human-readable format
 function formatDuration(seconds: number) {
   return humanizeDuration(seconds * 1000, {
     largest:1,
@@ -39,7 +39,7 @@ const statusColorMap = {
 };
 
 
-export const columns: ColumnDef<MeetingGetMany[number]>[] = [
+export const columns: ColumnDef<MeetingGetMany[number]>[] = [  //the [number] tells to get the single item from the array of MeetingGetMany
   {
     accessorKey: "name",
     header: "Meeting Name",
@@ -66,8 +66,8 @@ export const columns: ColumnDef<MeetingGetMany[number]>[] = [
     ),
   },
   {
-    accessorKey: "meetingCount",
-    header: "Meeting Count",
+    accessorKey: "status",
+    header: "Status",
     cell: ({ row }) => {
       const Icon = statusIconMap[row.original.status as keyof typeof statusIconMap];
       return (

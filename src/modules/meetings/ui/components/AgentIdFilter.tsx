@@ -12,6 +12,9 @@ export const AgentIdFilter = () => {
     const [filter, setFilter] = useMeetingsFilter();
     const trpc = useTRPC();
     const [agentSearch, setAgentSearch] = useState("");
+    // the setAgentSearch will be used to filter the agents by changing the agentSearch state and then triggering a re-fetch of the agent data and it will again refetch the agents with the new search term from the db 
+
+
 
     const {data} = useQuery(
         trpc.agents.getMany.queryOptions({
@@ -19,6 +22,7 @@ export const AgentIdFilter = () => {
             search: agentSearch,
         })
     );
+
 
     return (
         <CommandSelect
@@ -40,8 +44,8 @@ export const AgentIdFilter = () => {
             }))}
 
             onSelect={(value) => setFilter({ agentId:value })}
-            onSearch={setAgentSearch}
-            value={filter.agentId || ""} 
+            onSearch={setAgentSearch} //it will search from db
+            value={filter.agentId || ""}
         />
     );
 };

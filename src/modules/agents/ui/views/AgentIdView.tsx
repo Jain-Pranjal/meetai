@@ -30,7 +30,7 @@ export const AgentIdView = ({ agentId }: Props) => {
     trpc.agents.getOne.queryOptions({ id: agentId })
   );
 
-
+// api call to remove the agent
 const removeAgent= useMutation(trpc.agents.remove.mutationOptions({
     onSuccess: async() => {
       await queryClient.invalidateQueries(trpc.agents.getMany.queryOptions({}));
@@ -46,7 +46,7 @@ const removeAgent= useMutation(trpc.agents.remove.mutationOptions({
     const [RemoveConfirmationDialog, confirmRemove] = useConfirm("Are you sure you want to remove this agent?", `The following agent will be remove: ${data.meetingCount} associated meetings`);
 
     const handleRemoveAgent=async () => {
-        const ok = await confirmRemove();
+        const ok = await confirmRemove();  //confirmRemove will resolve in T/F
         if (!ok) {
             return;
         }
@@ -61,12 +61,12 @@ const removeAgent= useMutation(trpc.agents.remove.mutationOptions({
       <UpdateAgentDialog
         open={updateAgentDialogOpen}
         onOpenChange={setUpdateAgentDialogOpen}
-        initialValues={data}
+        initialValues={data} // passing the data to prepopulate the form
       />
 
     <div className="flex-1 py-4 px-4 md:px-8 flex flex-col gap-y-4">
       <AgentIdViewHeader
-        agentId={agentId}
+        agentId={agentId} //can also use data.id  
         agentName={data.name}
         onEdit={() => setUpdateAgentDialogOpen(true)}
         onRemove={() => handleRemoveAgent()}

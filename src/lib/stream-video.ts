@@ -1,3 +1,5 @@
+// create a server-side client
+
 import "server-only"; // Ensure this file is only run on the server
 
 import {StreamClient} from "@stream-io/node-sdk"

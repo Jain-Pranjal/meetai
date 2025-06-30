@@ -14,7 +14,7 @@ import { useRouter } from "next/navigation"
 
 export const AgentView = () => {
     const router=useRouter()
-    const [filters,setFilters]=useAgentsFilter()
+    const [filters,setFilters]=useAgentsFilter()  //as this state will contain the same search input as the whole app is wrapped in the nuqs provider so we can use the same state everywhere in the app 
 
     const trpc = useTRPC()
     const { data } = useSuspenseQuery(trpc.agents.getMany.queryOptions({

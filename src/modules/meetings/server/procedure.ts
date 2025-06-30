@@ -44,8 +44,8 @@ export const meetingsRouter = createTRPCRouter({
 
       const data = await db
         .select({
-          ...getTableColumns(meetings),
-          agent: agents,
+         ...getTableColumns(meetings),
+          agent: agents,  //individual agent details relevant to the meeting
           duration:sql<number>`EXTRACT(EPOCH FROM (${meetings.endedAt} - ${meetings.startedAt}))`.as("duration"),
         })
         .from(meetings)
@@ -132,6 +132,8 @@ export const meetingsRouter = createTRPCRouter({
         .returning();
 
 
+        // Create the stream call and upsert stream users
+        // so it will create a new call everytime a meeting is created 
         const call = streamVideo.video.call("default", createdMeeting.id)
         await call.create({
             data: {
@@ -154,11 +156,12 @@ export const meetingsRouter = createTRPCRouter({
             }
         })
 
-        const [existingAgent]= await db
-        .select()
-        .from(agents)
-        .where(
-            eq(agents.id, input.agentId)
+        // fetching the agents so that we can use them in call
+        const [existingAgent] = await db
+            .select()
+            .from(agents)
+            .where(
+                eq(agents.id, input.agentId)
         );
 
         if (!existingAgent) {
@@ -168,6 +171,7 @@ export const meetingsRouter = createTRPCRouter({
             });
         }
 
+        // the same way that we upsert the user in the stream call, we will upsert the agent as a user in the stream call so that agent can join the call
         await streamVideo.upsertUsers([{
             id: existingAgent.id,
             name: existingAgent.name,
@@ -238,7 +242,7 @@ export const meetingsRouter = createTRPCRouter({
 
 
 
-
+    // Tokens need to be generated server-side thats why we are using a server side client i.e. streamVideo
     generateToken:protectedProcedure.mutation(async ({ ctx }) => {
         await streamVideo.upsertUsers([{
             id: ctx.auth.user.id,
@@ -254,7 +258,9 @@ export const meetingsRouter = createTRPCRouter({
         const issuedAt=Math.floor(Date.now() / 1000)-60;
         const token = streamVideo.generateUserToken({
             user_id: ctx.auth.user.id,
-            expirationTime,
+            exp: expirationTime,
+            validity_in_seconds: issuedAt
+
         });
 
         return token;
@@ -264,3 +270,6 @@ export const meetingsRouter = createTRPCRouter({
 
 });
 
+
+
+// the stream is the backend client for the video call service that will handle the backend operations for the video call service

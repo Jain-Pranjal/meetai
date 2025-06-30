@@ -46,11 +46,12 @@ export const MeetingForm: React.FC<MeetingFormProps> = ({onSuccess,onCancel,init
 
 
 
-    const agents=useQuery(trpc.agents.getMany.queryOptions({
-        pageSize:100,
-        search:agentSearch
+    // here fetching the info of all the agents to show in the select dropdown and they are in array so to map them 
+    const listOfAgents = useQuery(trpc.agents.getMany.queryOptions({
+        pageSize: 100,
+        search: agentSearch
     }));
-
+    // this will get retrigger whenever the agentSearch changes and it will refetch the agents with the new search term
 
 
     // api call to create a meeting
@@ -59,7 +60,7 @@ export const MeetingForm: React.FC<MeetingFormProps> = ({onSuccess,onCancel,init
             onSuccess:async(data)=>{
                 await queryClient.invalidateQueries(trpc.meetings.getMany.queryOptions({}));
 
-
+            //the data is getting from the success response of the mutation after creating the meeting
                 onSuccess?.(data.id);
             },
 
@@ -147,7 +148,7 @@ export const MeetingForm: React.FC<MeetingFormProps> = ({onSuccess,onCancel,init
                         <FormLabel>Agent</FormLabel>
                         <FormControl>
                             <CommandSelect
-                                options={(agents.data?.items ?? []).map((agent) => ({
+                                options={(listOfAgents.data?.items ?? []).map((agent) => ({
                                     id: agent.id,
                                     value: agent.id,
                                     children: (
@@ -155,12 +156,12 @@ export const MeetingForm: React.FC<MeetingFormProps> = ({onSuccess,onCancel,init
                                             {generatedAvatar({
                                                 seed: agent.name || "User",
                                                 variant: "botttsNeutral",
-                                                className: "size-8"
+                                                className: "size-6"
                                             })}
                                             <span >{agent.name}</span>
                                         </div>
                                     ),
-                                })) ?? []}
+                                })) ?? []} // if no agents are found, it will return an empty array
                                 onSelect={field.onChange}
                                 onSearch={setAgentSearch}
                                 value={field.value}
@@ -170,7 +171,7 @@ export const MeetingForm: React.FC<MeetingFormProps> = ({onSuccess,onCancel,init
                         <FormMessage />
 
 
-                        <FormDescription>Not Found what your&apos;re looking for? <Button variant="link" onClick={() => setOpenNewAgentDialog(true)}>Create a new agent</Button></FormDescription>
+                        <FormDescription>Not Found what your&apos;re looking for?<Button variant="link" onClick={() => setOpenNewAgentDialog(true)}>Create a new agent</Button></FormDescription>
                         
                     </FormItem>
                 )}

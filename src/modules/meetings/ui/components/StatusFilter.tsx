@@ -3,6 +3,7 @@ import { MeetingStatus } from "../../types";
 import { CommandSelect } from "@/components/CommandSelect";
 import { useMeetingsFilter } from "../../hooks/use-meetings-filter";
 
+// commandSelect accepts the array that includes the id, value and children as the options
 
 const options=[
     {

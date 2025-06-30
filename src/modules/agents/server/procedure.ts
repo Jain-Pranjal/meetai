@@ -24,7 +24,7 @@ export const agentsRouter = createTRPCRouter({
             const { page, pageSize, search } = input;
 
             const data = await db.select({
-                ...getTableColumns(agents),
+                ...getTableColumns(agents), //to preserve all the columns from the agents table
                 meetingCount: sql<number>`5`
             }).from(agents)
             .where(and(eq(agents.userId, ctx.auth.session.userId),// filtering by userId to ensure only agents created by the user are returned
@@ -54,7 +54,8 @@ export const agentsRouter = createTRPCRouter({
 
 
     // fetch a single agent by id
-    getOne:protectedProcedure.input(z.object({ id: z.string() })).query(async ({ input, ctx }) => {
+    getOne:protectedProcedure.input(z.object({ id: z.string() }))
+    .query(async ({ input, ctx }) => {
         const [existingAgent] = await db.select({
             ...getTableColumns(agents),
             meetingCount: sql<number>`5`
@@ -83,7 +84,7 @@ export const agentsRouter = createTRPCRouter({
             ...input,
             userId: auth.user.id,  //setting the userId from the auth context into the db 
         })
-        .returning();
+        .returning();   //This method tells your database adapter to return the rows that were inserted
         return createdAgent;
     }),
 

@@ -1,5 +1,6 @@
-import { LoaderIcon } from "lucide-react";
+"use client";
 
+import { LoaderIcon } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
 import { CallConnect } from "./CallConnect";
 import { generatedAvatarURI } from "@/lib/avatar";
@@ -11,7 +12,7 @@ interface Props {
 }
 
 export const CallProvider = ({ meetingId, meetingName }: Props) => {
-    const {data,isPending} = authClient.useSession();
+    const {data,isPending} = authClient.useSession();  //getting the user session details using the client as it is a client component
 
     if(!data || isPending) {
         return (

@@ -31,9 +31,10 @@ export const CallConnect = ({ meetingId, meetingName, userId, userName, userImag
     const trpc = useTRPC();
     const {mutateAsync:generateToken}=useMutation(trpc.meetings.generateToken.mutationOptions());
 
-    const [client,setClient] = useState<StreamVideoClient>();
+    const [client,setClient] = useState<StreamVideoClient>(); //this is the frontend client
 
 
+    // making the client instance
     useEffect(() => {
         const _client = new StreamVideoClient({
             apiKey: process.env.NEXT_PUBLIC_STREAM_VIDEO_API_KEY!,
@@ -46,6 +47,7 @@ export const CallConnect = ({ meetingId, meetingName, userId, userName, userImag
         });
 
         setClient(_client);
+
         return ()=>{
             _client.disconnectUser();
             setClient(undefined);
@@ -53,7 +55,7 @@ export const CallConnect = ({ meetingId, meetingName, userId, userName, userImag
     }, [userId, userName, userImage, generateToken]);
 
 
-
+// making the call
     const[call,setCall] = useState<Call>();
     useEffect(() => {
         if (!client) return;
@@ -65,6 +67,7 @@ export const CallConnect = ({ meetingId, meetingName, userId, userName, userImag
         setCall(_call);
 
         return () => {
+            // checking condtion of the call state before leaving and ending the call
             if(_call.state.callingState!==CallingState.LEFT){
                 _call.leave();
                 _call.endCall();

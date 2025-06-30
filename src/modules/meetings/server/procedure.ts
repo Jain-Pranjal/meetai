@@ -156,12 +156,12 @@ export const meetingsRouter = createTRPCRouter({
             }
         })
 
-        // fetching the agents so that we can use them in call
+        // fetching the existing agent that this newly created meeting is associated with
         const [existingAgent] = await db
             .select()
             .from(agents)
             .where(
-                eq(agents.id, input.agentId)
+                eq(agents.id, createdMeeting.agentId)
         );
 
         if (!existingAgent) {
@@ -267,8 +267,12 @@ export const meetingsRouter = createTRPCRouter({
 
     }),
 
+    // The generated user tokens would then be provided to your client-side SDKs for users to authenticate and join the calls
+
 
 });
+
+// all these tokens details to create a user and its call data will be saved on stream so that they can use the stream sdk 
 
 
 

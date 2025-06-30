@@ -11,8 +11,8 @@ interface Props{
 export const CallActive = ({ onLeave, meetingName }: Props) => {
     return (
         <div className="flex flex-col justify-between p-4 h-full text-white">
-           <div className="flex bg-[#101213] rounded-full items-center gap-4">
-            <Link href="/" className="flex items-center justify-center p-1 bg-white/10 rounded-full w-fit">
+           <div className="flex bg-[#101213] rounded-full items-center gap-4 h-12 pl-3">
+            <Link href="/" className="flex items-center justify-center p-1 bg-white/10 rounded-full w-fit ">
                 <Image src="/appLogo.svg" alt="Logo" width={22} height={22} />
             </Link>
             <h4 className="text-base">{meetingName}</h4>

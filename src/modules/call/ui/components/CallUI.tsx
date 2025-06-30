@@ -11,11 +11,12 @@ interface Props{
 
 
 export const CallUI = ({ meetingName }: Props) => {
+    // using the useCall hook to get the call instance state
     const call = useCall();
     const [show, setShow] = useState<"lobby"|"call"|"ended">("lobby");
     
 
-
+// leaving the call
     const handleLeave = () => {
         if(!call)   return;
         call.endCall();
@@ -23,10 +24,11 @@ export const CallUI = ({ meetingName }: Props) => {
 
     }
 
+    // start the call
     const handleJoin = () => {
         if(!call) return;
         call.join();
-        setShow("call");
+        setShow("call"); 
     }
 
     return (
@@ -38,3 +40,5 @@ export const CallUI = ({ meetingName }: Props) => {
         </StreamTheme>
     )
 }
+
+// so we can use the useCall to find the current state of the call

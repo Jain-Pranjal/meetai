@@ -14,3 +14,13 @@ export enum MeetingStatus {
 
 
 // it will make the same type as the return of the getOne procedure in the meetings router
+
+
+
+export type StreamTranscriptItem={
+    speaker_id:string,
+    text:string,
+    start_ts:number,
+    stop_ts:number,
+    type:string
+}

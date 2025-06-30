@@ -10,12 +10,13 @@
     "rebase": "git pull && git checkout master && git pull && git rebase dev && git push && git checkout dev",
     "db:push": "npx drizzle-kit push",
     "db:studio": "npx drizzle-kit studio",
-    "dev:webhook": "ngrok http --url=physically-unified-minnow.ngrok-free.app 3000"
+    "dev:webhook": "ngrok http --url=$NGROK_URL 3000"
   },
   "dependencies": {
     "@dicebear/collection": "^9.2.2",
     "@dicebear/core": "^9.2.2",
     "@hookform/resolvers": "^5.0.1",
+    "@inngest/agent-kit": "^0.8.3",
     "@neondatabase/serverless": "^1.0.0",
     "@radix-ui/react-avatar": "^1.1.10",
     "@radix-ui/react-dialog": "^1.1.14",
@@ -42,6 +43,8 @@
     "dotenv": "^16.5.0",
     "drizzle-orm": "^0.43.1",
     "humanize-duration": "^3.33.0",
+    "inngest": "^3.39.2",
+    "jsonl-parse-stringify": "^1.0.3",
     "lucide-react": "^0.511.0",
     "nanoid": "^5.1.5",
     "next": "15.3.2",

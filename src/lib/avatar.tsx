@@ -30,3 +30,6 @@ export const  generatedAvatarURI = ({ seed, variant }: AvatarProps) => {
 };
 
 //this will be used to generate the avatar URI based on the seed and variant provide for the Stream call UI
+
+
+// this dataURI can be directly used in the src attribute of an img tag 

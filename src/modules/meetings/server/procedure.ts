@@ -272,8 +272,4 @@ export const meetingsRouter = createTRPCRouter({
 
 });
 
-// all these tokens details to create a user and its call data will be saved on stream so that they can use the stream sdk 
-
-
-
-// the stream is the backend client for the video call service that will handle the backend operations for the video call service
+// first we need to upsert the user in the stream backend and then we need to generate the token for the user to join the call

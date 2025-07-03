@@ -34,7 +34,7 @@ export const CallConnect = ({ meetingId, meetingName, userId, userName, userImag
     const [client,setClient] = useState<StreamVideoClient>(); //this is the frontend client
 
 
-    // making the client instance
+    // making the client instance of the frontend client as Before joining a call, it is necessary to set up the video client
     useEffect(() => {
         const _client = new StreamVideoClient({
             apiKey: process.env.NEXT_PUBLIC_STREAM_VIDEO_API_KEY!,
@@ -55,7 +55,7 @@ export const CallConnect = ({ meetingId, meetingName, userId, userName, userImag
     }, [userId, userName, userImage, generateToken]);
 
 
-// making the call
+// making the call instance that will actually set up the call
     const[call,setCall] = useState<Call>();
     useEffect(() => {
         if (!client) return;
@@ -94,3 +94,6 @@ export const CallConnect = ({ meetingId, meetingName, userId, userName, userImag
         </StreamVideo>
     );
 };
+
+
+// This component is responsible for connecting to the call using the Stream Video SDK. and making the token for the user so that the user can join the call.

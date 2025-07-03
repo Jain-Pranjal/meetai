@@ -14,7 +14,9 @@ export const CallUI = ({ meetingName }: Props) => {
     // using the useCall hook to get the call instance state
     const call = useCall();
     const [show, setShow] = useState<"lobby"|"call"|"ended">("lobby");
-    
+
+    // call is the same instance that we had created in callConnect.tsx
+
 
 // leaving the call
     const handleLeave = () => {

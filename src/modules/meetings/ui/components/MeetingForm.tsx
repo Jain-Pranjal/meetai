@@ -22,6 +22,7 @@ import { useState } from "react";
 import { CommandSelect } from "@/components/CommandSelect";
 import { generatedAvatar } from "@/components/generated-avatar";
 import { NewAgentDialog } from "@/modules/agents/ui/components/NewAgentDialog";
+import { useRouter } from "next/navigation";
 
 
 interface MeetingFormProps {
@@ -40,6 +41,7 @@ export const MeetingForm: React.FC<MeetingFormProps> = ({onSuccess,onCancel,init
 
     const trpc=useTRPC();
     const queryClient=useQueryClient();
+    const router=useRouter();
 
     const [openNewAgentDialog,setOpenNewAgentDialog] = useState(false);
     const [agentSearch,setAgentSearch] = useState("");
@@ -59,6 +61,7 @@ export const MeetingForm: React.FC<MeetingFormProps> = ({onSuccess,onCancel,init
         trpc.meetings.create.mutationOptions({
             onSuccess:async(data)=>{
                 await queryClient.invalidateQueries(trpc.meetings.getMany.queryOptions({}));
+                  await queryClient.invalidateQueries(trpc.premium.getFreeUsage.queryOptions());
 
             //the data is getting from the success response of the mutation after creating the meeting
                 onSuccess?.(data.id);
@@ -66,6 +69,10 @@ export const MeetingForm: React.FC<MeetingFormProps> = ({onSuccess,onCancel,init
 
             onError: (error) => {
                 toast.error(error.message || "Failed to create meeting");
+
+                if(error.data?.code === "FORBIDDEN") {
+                    router.push("/upgrade");
+                }
             }
         })
     );

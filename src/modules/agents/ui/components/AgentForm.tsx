@@ -19,6 +19,7 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea";
 import { generatedAvatar } from "@/components/generated-avatar";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 
 interface AgentFormProps {
@@ -34,6 +35,7 @@ export const AgentForm: React.FC<AgentFormProps> = ({onSuccess,onCancel,initialV
 
     const trpc=useTRPC();
     const queryClient=useQueryClient();
+    const router=useRouter()
 
 
     // api call to create an agent
@@ -41,6 +43,7 @@ export const AgentForm: React.FC<AgentFormProps> = ({onSuccess,onCancel,initialV
         trpc.agents.create.mutationOptions({
             onSuccess:async()=>{
                 await queryClient.invalidateQueries(trpc.agents.getMany.queryOptions({}));
+                await queryClient.invalidateQueries(trpc.premium.getFreeUsage.queryOptions());
 
                 
                 onSuccess?.();
@@ -50,6 +53,11 @@ export const AgentForm: React.FC<AgentFormProps> = ({onSuccess,onCancel,initialV
 
             onError: (error) => {
                 toast.error(error.message || "Failed to create agent");
+
+                if(error.data?.code === "FORBIDDEN"){
+                    router.push("/upgrade");
+                }
+            
             }
         })
     );

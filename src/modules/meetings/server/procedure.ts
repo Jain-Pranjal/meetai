@@ -1,4 +1,4 @@
-import { createTRPCRouter, protectedProcedure } from "@/trpc/init";
+import { createTRPCRouter, premiumProcedure, protectedProcedure } from "@/trpc/init";
 import { db } from "@/db";
 import { agents, meetings, user } from "@/db/schema";
 import JSONL from "jsonl-parse-stringify";
@@ -228,7 +228,7 @@ export const meetingsRouter = createTRPCRouter({
 
 
 
-  create: protectedProcedure
+  create: premiumProcedure("meetings")
     .input(meetingInsertSchema)
     .mutation(async ({ input, ctx }) => {
       const { auth } = ctx;

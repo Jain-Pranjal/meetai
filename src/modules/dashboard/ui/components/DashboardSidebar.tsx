@@ -18,6 +18,7 @@ import { cn } from "@/lib/utils"
 import { usePathname } from "next/navigation"
 import { Separator } from "@/components/ui/separator"
 import { DashboardUserButton } from "./DashboardUserButton"
+import { DashboardTrial } from "./DashboardTrial"
 
 const firstSection = [
     {
@@ -125,6 +126,7 @@ export const DashboardSidebar = () => {
 
             {/* User information in footer */}
             <SidebarFooter className="p-3">
+                <DashboardTrial />
                 <DashboardUserButton />
             </SidebarFooter>
         </Sidebar>

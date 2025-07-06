@@ -67,7 +67,8 @@ export const DashboardUserButton = () => {
     // Menu items for dropdown
     const DropdownMenuItems = () => (
         <>
-            <DropdownMenuItem className='cursor-pointer flex justify-between items-center'>
+            <DropdownMenuItem className='cursor-pointer flex justify-between items-center'
+            onClick={() => authClient.customer.portal()}>
                 Billing 
                 <CreditCardIcon className='ml-auto size-4' />
             </DropdownMenuItem>
@@ -93,6 +94,7 @@ export const DashboardUserButton = () => {
                 <Button 
                     variant="outline"
                     className='w-full justify-between h-10 font-normal border border-muted-foreground/20'
+                    onClick={() => authClient.customer.portal()}
                 >
                     Billing 
                     <CreditCardIcon className='ml-auto size-4' />

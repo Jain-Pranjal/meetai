@@ -1,4 +1,4 @@
-import { createTRPCRouter, protectedProcedure } from "@/trpc/init";
+import { createTRPCRouter, premiumProcedure, protectedProcedure } from "@/trpc/init";
 import { db } from "@/db";
 import { agents } from "@/db/schema";
 import { agentInsertSchema, agentUpdateSchema } from "../schema";
@@ -75,7 +75,7 @@ export const agentsRouter = createTRPCRouter({
 
 // the zod schema is used to validate the input data for creating an agent
 
-    create:protectedProcedure
+    create:premiumProcedure("agents")
     .input(agentInsertSchema)
     .mutation(async ({ input,ctx }) => {
         const { auth } = ctx; 

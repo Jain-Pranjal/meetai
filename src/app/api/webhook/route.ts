@@ -3,7 +3,8 @@ import {
     CallTranscriptionReadyEvent,
     CallRecordingReadyEvent,
     CallSessionParticipantLeftEvent,
-    CallSessionStartedEvent
+    CallSessionStartedEvent,
+    MessageNewEvent
 } from "@stream-io/node-sdk"
 import { db } from "@/db"
 import { agents,meetings } from "@/db/schema"
@@ -11,7 +12,16 @@ import { streamVideo } from "@/lib/stream-video"
 import {and,eq,not} from "drizzle-orm"
 import { NextResponse , NextRequest} from "next/server"
 import { inngest } from "@/inngest/client"
+import {ChatCompletionMessageParam} from "openai/resources/index.mjs"
+import OpenAI from "openai"
+import { streamChat } from "@/lib/stream-chat"
+import { generatedAvatarURI } from "@/lib/avatar"
 
+
+
+const openaiClient = new OpenAI({
+    apiKey: process.env.OPENAI_API_KEY!
+});
 
 // we need to verify the signature of the webhook request to ensure that it is coming from Stream Video and not from any other source
 function verifySignatureWithSDK(body: string, signature: string) :boolean{
@@ -163,14 +173,103 @@ export async function POST(req: NextRequest) {
         )
 
 
+    }else if(eventType === "message.new") {
+        const event = payload as MessageNewEvent;
+        const userId=event.user?.id
+        const channelId=event.channel_id;
+        const text=event.message?.text
+
+        if(!userId || !channelId || !text) {
+            return NextResponse.json({error: "Missing required fields"}, {status: 400});
+        }
+
+
+        const [existingMeeting] = await db.select().from(meetings)
+        .where(and(eq(meetings.id, channelId), eq(meetings.status, "completed")));
+
+        if(!existingMeeting) {
+            return NextResponse.json({error: "Meeting not found"}, {status: 404});
+        }
+
+        const [existingAgent] = await db.select().from(agents).where(eq(agents.id, existingMeeting.agentId));
+
+        if(!existingAgent) {
+            return NextResponse.json({error: "Agent not found"}, {status: 404});
+        }
+
+        if(userId!==existingAgent.id) {
+        const instructions=`
+        You are an AI assistant helping the user revisit a recently completed meeting.
+        Below is a summary of the meeting, generated from the transcript:
+        
+        ${existingMeeting.summary}
+        
+        The following are your original instructions from the live meeting assistant. Please continue to follow these behavioral guidelines as you assist the user:
+        
+        ${existingAgent.instructions}
+        
+        The user may ask questions about the meeting, request clarifications, or ask for follow-up actions.
+        Always base your responses on the meeting summary above.
+        
+        You also have access to the recent conversation history between you and the user. Use the context of previous messages to provide relevant, coherent, and helpful responses. If the user's question refers to something discussed earlier, make sure to take that into account and maintain continuity in the conversation.
+        
+        If the summary does not contain enough information to answer a question, politely let the user know.
+        
+        Be concise, helpful, and focus on providing accurate information from the meeting and the ongoing conversation.
+        `;
+
+
+      const channel=streamChat.channel("messaging",channelId);
+      await channel.watch();
+
+      const previousMessages = channel.state.messages
+      .slice(-5)
+      .filter((message) => message.text && message.text.trim()!=="")
+      .map<ChatCompletionMessageParam>((message) => ({
+        role:message.user?.id === existingAgent.id ? "assistant" : "user",
+        content: message.text || "",
+      }));
+
+      const GPTresponse=await openaiClient.chat.completions.create({
+        messages:[
+            {role: "system", content: instructions},
+            ...previousMessages,
+            {role: "user", content: text}, 
+        ],
+        model:"gpt-4o",
+    });
+
+    const GPTresponseText = GPTresponse.choices[0].message.content;
+
+    if(!GPTresponseText){
+        return NextResponse.json({error: "No response from AI"}, {status: 500});
     }
 
+    const avatarURL=  generatedAvatarURI({
+        seed: existingAgent.name,
+        variant: "botttsNeutral",
+    })
+
+    streamChat.upsertUsers([{ 
+        id: existingAgent.id,
+        name: existingAgent.name,
+        image: avatarURL,
+    }])
+
+    channel.sendMessage({
+        text: GPTresponseText,
+        user:{
+            id: existingAgent.id,
+            name: existingAgent.name,
+            image: avatarURL,
+        }
+    })
 
 
     
     return NextResponse.json({status:"OK"}, {status: 200});
     
 }
-
+}
+}
 // payload is the data that we get from the req and. convert it to JSON
-// so in these event only we are adding the agent to the call 

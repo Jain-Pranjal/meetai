@@ -15,10 +15,22 @@ import { meetingInsertSchema, meetingUpdateSchema } from "../schema";
 import { MeetingStatus,StreamTranscriptItem } from "../types";
 import { streamVideo } from "@/lib/stream-video";
 import { generatedAvatarURI } from "@/lib/avatar";
+import { streamChat } from "@/lib/stream-chat";
 
 // this is specifically the procedure for the meetings module
 
 export const meetingsRouter = createTRPCRouter({
+
+
+
+  generateChatToken: protectedProcedure.mutation(async ({ ctx }) => {
+    const token=streamChat.createToken(ctx.auth.user.id)
+    await streamChat.upsertUsers([{
+      id:ctx.auth.user.id,
+      role:"admin",
+    }])
+    return token;
+  }),
 
 
   getTranscript: protectedProcedure

@@ -9,17 +9,9 @@ import humanizeDuration from "humanize-duration";
 import { format } from "date-fns";
 import { CircleCheckIcon,CircleXIcon,ClockArrowUpIcon,ClockFadingIcon,CornerDownRightIcon,LoaderIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { formatDuration } from "@/lib/utils";
 
 
-// this function formats the duration in seconds to a human-readable format
-function formatDuration(seconds: number) {
-  return humanizeDuration(seconds * 1000, {
-    largest:1,
-    round: true,
-    units: ["h", "m", "s"],
-  })
-}
-  
 
 const statusIconMap={
   upcoming:ClockArrowUpIcon,

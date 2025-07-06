@@ -14,6 +14,7 @@ import { UpcomingState } from "../components/UpcomingState";
 import { ActiveState } from "../components/ActiveState";
 import { CancelledState } from "../components/CancelledState";
 import { ProcessingState } from "../components/ProcessingState";
+import { CompletedState } from "../components/CompletedState";
 
 interface Props {
   meetingId: string;
@@ -85,6 +86,7 @@ const removeMeeting= useMutation(trpc.meetings.remove.mutationOptions({
       {isUpcoming && <UpcomingState  meetingId={meetingId} onCancel={()=>{}} isCanceling={false} />}
       {isActive && <ActiveState meetingId={meetingId} />}
       {isProcessing && <ProcessingState />}
+      {isCompleted && <CompletedState data={data}/>}
     </div>
 </>
   );

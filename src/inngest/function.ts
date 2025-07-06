@@ -6,6 +6,8 @@ import { agents, user ,meetings} from "@/db/schema";
 import { and, eq, inArray } from "drizzle-orm";
 import { createAgent, openai, TextMessage } from "@inngest/agent-kit";
 
+// we have send the data:{transcriptUrl . meetingId} to this component
+
 const summarizer = createAgent({
   name: "Summarizer",
   system: `
@@ -42,8 +44,10 @@ export const meetingsProcessing = inngest.createFunction(
       });
     });
 
+
     const transcript = await step.run("parse-transcript", async () => {
       return JSONL.parse<StreamTranscriptItem>(response);
+      // this type is defined as it is the in the transcript URL
     });
 
     const transcriptWithSpeakers = await step.run("add-speakers", async () => {
@@ -54,7 +58,7 @@ export const meetingsProcessing = inngest.createFunction(
       const userSpeaker = await db
         .select()
         .from(user)
-        .where(inArray(user.id, event.data.userId))
+        .where(inArray(user.id, speakerIds))
         .then((users) => {
           return users.map((u) => ({ ...u }));
         });
@@ -62,7 +66,7 @@ export const meetingsProcessing = inngest.createFunction(
       const agentSpeaker = await db
         .select()
         .from(agents)
-        .where(inArray(agents.id, event.data.userId))
+        .where(inArray(agents.id, speakerIds))
         .then((agents) => {
           return agents.map((agent) => ({ ...agent }));
         });
@@ -108,3 +112,6 @@ export const meetingsProcessing = inngest.createFunction(
 
   }
 )})
+
+
+// bascially we are adding and making the steps that will run a background job to process the meeting data after the meeting is completed

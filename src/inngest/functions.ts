@@ -6,8 +6,11 @@ import { agents, user ,meetings} from "@/db/schema";
 import { and, eq, inArray } from "drizzle-orm";
 import { createAgent, openai, TextMessage } from "@inngest/agent-kit";
 
-// we have send the data:{transcriptUrl . meetingId} to this component
+// we have to send the data:{transcriptUrl . meetingId} to this component
 
+// inngest has the agent kit which allows us to create agents that can process data and perform actions based on the data
+
+// building the agent to summarize the meeting transcript and directly used as a step
 const summarizer = createAgent({
   name: "Summarizer",
   system: `
@@ -40,13 +43,15 @@ export const meetingsProcessing = inngest.createFunction(
   async ({ event, step }) => {
     const response = await step.run("fetch-transcript", async () => {
       return fetch(event.data.transcriptUrl).then((res) => {
-        return res.text();
+        return res.text();  // as jsonl.parse accepts a string
       });
     });
+     
 
 
+// we need to parse the transcript as it is in JSONL format
     const transcript = await step.run("parse-transcript", async () => {
-      return JSONL.parse<StreamTranscriptItem>(response);
+      return JSONL.parse<StreamTranscriptItem>(response);  //return array
       // this type is defined as it is the in the transcript URL
     });
 
@@ -95,9 +100,11 @@ export const meetingsProcessing = inngest.createFunction(
       });
     });
 
+  // transcriptWithSpeakers will have all the info along with speaker names in it 
+
     const {output}=await summarizer.run(
       "Summarize the following transcript : "+
-      JSON.stringify(transcriptWithSpeakers),
+      JSON.stringify(transcriptWithSpeakers),  //concating the string
     )
 
     await step.run("save-summary", async () => {
@@ -115,3 +122,15 @@ export const meetingsProcessing = inngest.createFunction(
 
 
 // bascially we are adding and making the steps that will run a background job to process the meeting data after the meeting is completed
+
+
+
+/*
+STEPS
+1. Fetch the transcript from the provided URL.
+2. Parse the transcript from JSONL format into JSON.
+3. Add speaker information to each transcript item.
+4. Summarize the meeting transcript.
+5. Save the summary and status to the database.
+*/
+

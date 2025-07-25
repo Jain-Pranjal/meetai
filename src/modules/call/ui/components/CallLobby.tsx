@@ -18,6 +18,7 @@ interface Props {
   onJoin: () => void;
 }
 
+// this is the component that will render when camera and microphone are allowed in the browser
 const disabledVideoPreview = ()=>{
     const {data} = authClient.useSession();
 
@@ -38,7 +39,7 @@ const disabledVideoPreview = ()=>{
     )
 }
 
-
+// this is the component that will render when camera and microphone are NOT allowed in the browser
 const allowBrowserPermissions = () => {
     return (
         <p className="text-sm">

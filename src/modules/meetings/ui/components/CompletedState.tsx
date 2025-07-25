@@ -109,7 +109,7 @@ export const CompletedState = ({ data }: props) => {
                   <p>General Summary</p>
                 </div>
 
-                <Badge variant="outline" className="flex items-center  [&> svg]:size-4">
+                <Badge variant="outline" className="flex items-center [&>svg]:size-4">
                   <ClockFadingIcon className="text-blue-700"/>
                   {data.duration?formatDuration(data.duration):"No duration"}
                 </Badge>

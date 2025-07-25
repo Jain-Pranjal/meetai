@@ -1,4 +1,4 @@
-// create a server-side client
+// create a server-side client for Stream Video
 
 import "server-only"; // Ensure this file is only run on the server
 

@@ -84,7 +84,7 @@ const removeMeeting= useMutation(trpc.meetings.remove.mutationOptions({
       />
 
       {isCancelled && <CancelledState/>}
-      {isUpcoming && <UpcomingState  meetingId={meetingId} onCancel={()=>{}} isCanceling={false} />}
+      {isUpcoming && <UpcomingState  meetingId={meetingId} />}
       {isActive && <ActiveState meetingId={meetingId} />}
       {isProcessing && <ProcessingState />}
       {isCompleted && <CompletedState data={data}/>}

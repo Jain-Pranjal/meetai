@@ -11,8 +11,8 @@ interface Props{
 
 
 export const CallUI = ({ meetingName }: Props) => {
-    // using the useCall hook to get the call instance state
-    const call = useCall();
+    // using the useCall hook to get the state of the call as it is made up of the same instance of Call
+    const call = useCall();  //instance of the call
     const [show, setShow] = useState<"lobby"|"call"|"ended">("lobby");
 
     // call is the same instance that we had created in callConnect.tsx

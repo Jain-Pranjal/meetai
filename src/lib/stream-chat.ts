@@ -1,3 +1,5 @@
+// create a server-side client for Stream Chat
+
 import "server-only"
 import {StreamChat} from "stream-chat"
 

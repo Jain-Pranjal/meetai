@@ -15,6 +15,8 @@ import {
 import { useTRPC } from "@/trpc/client";
 import { Loading } from "@/components/Loading";
 import "stream-chat-react/dist/css/v2/index.css";
+import { EmojiPicker } from 'stream-chat-react/emojis';
+import { init, SearchIndex } from "emoji-mart";
 
 interface Props {
   meetingId: string;
@@ -39,6 +41,8 @@ export const ChatUI = ({
   );
 
   const [channel, setChannel] = useState<StreamChannel>();
+
+  // making a client instance of the chat and passing the token (frontend client)
   const client = useCreateChatClient({
     apiKey: process.env.NEXT_PUBLIC_STREAM_CHAT_API_KEY!,
     userData: {
@@ -47,11 +51,13 @@ export const ChatUI = ({
       image: userImage,
     },
     tokenOrProvider: generateChatToken,
-  });
+  }); 
+
 
   useEffect(() => {
     if (!client) return;
 
+// messaging is the channel type and passing the same meetingId as the channel ID
     const channel = client.channel("messaging", meetingId, {
       members: [userId],
     });
@@ -70,7 +76,7 @@ export const ChatUI = ({
   return (
     <div className="bg-white rounded-lg border overflow-hidden">
       <Chat client={client}>
-        <Channel channel={channel}>
+        <Channel channel={channel} EmojiPicker={EmojiPicker} emojiSearchIndex={SearchIndex}>
           <Window>
             <div className="flex-1 overflow-y-auto max-h-[calc(100vh-23rem)] border-b">
               <MessageList />
@@ -83,3 +89,6 @@ export const ChatUI = ({
     </div>
   );
 };
+
+
+// The channel React Context provider that wraps all the logic, functionality, and UI basically it is the context provider for the chat

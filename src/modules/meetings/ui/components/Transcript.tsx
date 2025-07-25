@@ -16,11 +16,12 @@ interface Props {
 export const Transcript = ({ meetingId }: Props) => {
   const trpc = useTRPC();
   const { data } = useQuery(
-    trpc.meetings.getTranscript.queryOptions({
+    trpc.meetings.getTranscript.queryOptions({ //giving res in array format
       id: meetingId,
     })
   );
 
+  // Filtering the data based on the search query
   const [searchQuery, setSearchQuery] = useState("");
   const filteredData = (data ?? []).filter((item) => {
     return item.text.toLowerCase().includes(searchQuery.toLowerCase());
@@ -60,8 +61,8 @@ export const Transcript = ({ meetingId }: Props) => {
                       alt="User Avatar"
                     />
                   </Avatar>
-                  <p className="text-sm text-blue-500 font-medium">{item.user.name}</p>
-                  <p className="text-xs text-muted-foreground">
+                  <p className="text-sm  font-medium">{item.user.name}</p>
+                  <p className="text-xs text-blue-500 font-medium">
                     {format(new Date(0, 0, 0, 0, 0, 0, item.start_ts), "mm:ss")}
                   </p>
                 </div>
@@ -69,7 +70,7 @@ export const Transcript = ({ meetingId }: Props) => {
                   <Highlighter
                     className="text-sm text-neutral-700"
                     highlightClassName="bg-yellow-200"
-                    searchWords={[searchQuery]}
+                    searchWords={[searchQuery]} //accepts array of strings
                     autoEscape={true}
                     textToHighlight={item.text}
                   />

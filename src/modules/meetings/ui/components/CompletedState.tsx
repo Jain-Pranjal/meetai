@@ -92,7 +92,7 @@ export const CompletedState = ({ data }: props) => {
                 <h2 className="text-2xl font-medium capitalize">{data.name}</h2>
                 <div className="flex gap-x-2 items-center">
                     <Link href={`/agents/${data.agent.id}`}
-                    className="flex items-center gap-x underline underline-offset-4 capitalize">
+                    className="flex items-center gap-2 underline underline-offset-4 capitalize">
                     {generatedAvatar({
                         variant: "botttsNeutral",
                         seed: data.agent.name,

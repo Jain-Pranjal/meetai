@@ -1,9 +1,9 @@
 import { createTRPCRouter, premiumProcedure, protectedProcedure } from "@/trpc/init";
 import { db } from "@/db";
-import { agents } from "@/db/schema";
+import { agents, meetings } from "@/db/schema";
 import { agentInsertSchema, agentUpdateSchema } from "../schema";
 import { z } from "zod";
-import { eq, sql , getTableColumns, and, ilike,desc,count} from "drizzle-orm";
+import { eq, getTableColumns, and, ilike,desc,count} from "drizzle-orm";
 import { DEFAULT_PAGE,MIN_PAGE_SIZE,MAX_PAGE_SIZE,DEFAULT_PAGE_SIZE } from "@/constants";
 import { TRPCError } from "@trpc/server";
 
@@ -25,7 +25,7 @@ export const agentsRouter = createTRPCRouter({
 
             const data = await db.select({
                 ...getTableColumns(agents), //to preserve all the columns from the agents table
-                meetingCount: sql<number>`5`
+                meetingCount: db.$count(meetings, eq(agents.id, meetings.agentId)) // counting the number of meetings for each agent
             }).from(agents)
             .where(and(eq(agents.userId, ctx.auth.session.userId),// filtering by userId to ensure only agents created by the user are returned
             search ? ilike(agents.name, `%${search}%`):undefined))
@@ -58,7 +58,7 @@ export const agentsRouter = createTRPCRouter({
     .query(async ({ input, ctx }) => {
         const [existingAgent] = await db.select({
             ...getTableColumns(agents),
-            meetingCount: sql<number>`5`
+            meetingCount:db.$count(meetings,eq(agents.id,meetings.agentId))
         }).from(agents)
         .where(and(
             eq(agents.id, input.id),
@@ -74,6 +74,8 @@ export const agentsRouter = createTRPCRouter({
 
 
 // the zod schema is used to validate the input data for creating an agent
+
+// this premiumProcedure is built on top of the protectedProcedure, so it will check for the auth along with the premium limits if it exceeds the limits it will throw an error
 
     create:premiumProcedure("agents")
     .input(agentInsertSchema)

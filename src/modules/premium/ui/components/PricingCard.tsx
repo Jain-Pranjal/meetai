@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 
+// to make the diff variants we use the cva function from class-variance-authority
 
 const pricingCardVariants = cva("rounded-lg p-4 py-6 w-full",{
     variants: {
@@ -57,7 +58,7 @@ interface Props extends VariantProps <typeof pricingCardVariants> {
     title:string,
     features:string[],
     price:number,
-    description?:string,
+    description?:string|null,
     className?:string,
     buttonText:string,
     onClick?: () => void,
@@ -76,7 +77,7 @@ export const PricingCard = ({
     buttonText,
     onClick,
     priceSuffix,
-    variant = "default"
+    variant = "default" //no need to pass variant in interface , will be handled by VariantProps
 }: Props) => {
     return (
        <div className={cn(pricingCardVariants({variant}),className,"border")}>
@@ -92,6 +93,8 @@ export const PricingCard = ({
                 </div>
                     <p className={cn("text-xs",pricingCardSecondaryTextVariant({variant}))}>{description}</p>
             </div>
+
+            {/* Formatting the price */}
                     <div className="flex shrink-0 items-end gap-x-0.5">
                         <h4 className="text-3xl font-medium">
                             {Intl.NumberFormat("en-US",{

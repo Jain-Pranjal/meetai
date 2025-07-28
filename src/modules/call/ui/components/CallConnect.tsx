@@ -1,3 +1,5 @@
+// https://getstream.io/video/docs/react/basics/quickstart/#client-setup--calls
+// https://getstream.io/video/docs/react/ui-components/core/stream-video/
 "use client";
 
 import {
@@ -35,6 +37,7 @@ export const CallConnect = ({ meetingId, meetingName, userId, userName, userImag
 
 
     // making the client instance of the frontend client as Before joining a call, it is necessary to set up the video client
+    // basically we are making a token for the user to join the call on the frontend by making a client instance
     useEffect(() => {
         const _client = new StreamVideoClient({
             apiKey: process.env.NEXT_PUBLIC_STREAM_VIDEO_API_KEY!,
@@ -72,6 +75,7 @@ export const CallConnect = ({ meetingId, meetingName, userId, userName, userImag
                 _call.leave();
                 _call.endCall();
                 setCall(undefined);
+// Every call instance has its own local state managed by the SDK.
 
             }
 
@@ -87,11 +91,11 @@ export const CallConnect = ({ meetingId, meetingName, userId, userName, userImag
     }
 
     return (
-        <StreamVideo client={client}>
-            <StreamCall call={call} >
+        <StreamVideo client={client}>{/*passing the stream frontend client instance*/} 
+            <StreamCall call={call} > {/*passing the call instance*/}
                 <CallUI meetingName={meetingName} />
             </StreamCall>
-        </StreamVideo>
+        </StreamVideo> 
     );
 };
 

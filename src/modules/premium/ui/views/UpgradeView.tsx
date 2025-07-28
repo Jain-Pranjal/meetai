@@ -6,27 +6,33 @@ import { Error } from "@/components/ErrorState";
 import { useTRPC } from "@/trpc/client";
 import { PricingCard } from "../components/PricingCard";
 
-export const UpgradeView = () => {
+export const UpgradeView = () => { 
 
     const trpc=useTRPC();
 
+    // this will give us the products array
     const {data:products}=useSuspenseQuery(trpc.premium.getProducts.queryOptions());
     const{data:currentSubscription}=useSuspenseQuery(trpc.premium.getCurrentSubscription.queryOptions());
+
+// The current subscription is the product only as it is the same product we are upgrading to
+
 
     return (
         <div className="flex-1 py-4 px-4 md:px-8 flex flex-col gap-y-10">
             <div className="flex-1 mt-4 flex-col flex gap-y-10 items-center">
                 <h5 className="font-medium text-2xl md:text-3xl">
-                    You are on the
-                    <span className="font-semibold text-primary">
+                    You are on the{" "}
+                    <span className="font-semibold text-blue-600">
                         { currentSubscription?.name ?? "Free"} 
                     </span>{" "}
                     plan
                 </h5>
+
+                {/* AS THE SUBSCRIPTION IS THE PRODUCT ONLY SO WE WILL DISPLAY ALL THE NAMES OF THE PRODCUT ALONG WITH DETAILS WHICH ARE ITSELF IS A SUBSCRIPTION PLAN*/}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     {products.map((product) => {
                         const isCurrentProduct = currentSubscription?.id === product.id;
-                        const isPremium = !!currentSubscription;
+                        const isPremium = !!currentSubscription; //boolean
 
                         let buttonText = "Upgrade";
                         let onClick = () => {
@@ -43,10 +49,7 @@ export const UpgradeView = () => {
                         } else if (isPremium) {
                             buttonText = "Change Plan";
                             onClick = () => {
-                                authClient.checkout({
-                                    products: [product.id],
-                                    replace: true,
-                                });
+                                authClient.customer.portal()
                             };
                         }
 
@@ -58,8 +61,8 @@ export const UpgradeView = () => {
                                onClick={onClick}
                                title={product.name}
                                description={product.description}
-                               price={product.prices[0].amountType==="fixed"? product.prices[0].priceAmount/100:0}
-                               priceSuffix={`/${product.prices[0].interval}`}
+                               price={product.prices[0].amountType==="fixed"? product.prices[0].priceAmount/100:0} //as they are in cents
+                               priceSuffix={`/${product.prices[0].recurringInterval}`}
                                features={product.benefits.map((benefit) => benefit.description)}
                                badge={product.metadata.badge as string | null}
                            />
@@ -71,7 +74,7 @@ export const UpgradeView = () => {
     )}
 
 
-
+// the metadata is set in the polar dashboard
 
 
 

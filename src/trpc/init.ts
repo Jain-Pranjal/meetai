@@ -3,6 +3,13 @@ import { cache } from 'react';
 import { auth } from '@/lib/auth';
 import { headers } from 'next/headers';
 import { TRPCError } from '@trpc/server';
+import { polarClient } from '@/lib/polar';
+import { db } from '@/db';
+import { agents, meetings } from '@/db/schema';
+import { eq, count } from 'drizzle-orm';
+import { MAX_FREE_AGENTS, MAX_FREE_MEETINGS } from '@/modules/premium/constants';
+
+
 export const createTRPCContext = cache(async () => {
   /**
    * @see: https://trpc.io/docs/server/context
@@ -43,3 +50,52 @@ export const protectedProcedure = baseProcedure.use(async ({ ctx, next }) => {
 
 // base procedure is used for public procedures which do not require authentication
 // protectedProcedure is used for procedures which require authentication
+
+
+
+// This premiumProcedure is used to check if the user has reached the limit of free agents or meetings and will throw an error if the limit is reached
+export const premiumProcedure=(entity :"meetings" | "agents") => 
+  protectedProcedure.use(async ({ ctx, next }) => {
+    const customer=await polarClient.customers.getStateExternal({
+      externalId: ctx.auth.user.id
+    })
+
+    const [userMeetings]=await db
+    .select({
+        count: count(meetings.id)
+    })
+    .from(meetings)
+    .where(eq(meetings.userId, ctx.auth.user.id))
+
+    const [userAgents]= await db
+    .select({
+        count: count(agents.id)
+    })
+    .from(agents)
+    .where(eq(agents.userId, ctx.auth.user.id))
+
+    const isPremium = customer.activeSubscriptions.length > 0;
+    const isFreeAgentLimitReached=userAgents.count >= MAX_FREE_AGENTS
+    const isFreeMeetingLimitReached=userMeetings.count >= MAX_FREE_MEETINGS
+
+    const shouldThrowMeetingError=entity === "meetings" && !isPremium && isFreeMeetingLimitReached;
+    const shouldThrowAgentError=entity === "agents" && !isPremium && isFreeAgentLimitReached;
+
+    if(shouldThrowMeetingError) {
+      throw new TRPCError({
+        code: "FORBIDDEN",
+        message: "You have reached the limit of free meetings. Please upgrade to a premium plan to create more meetings.",
+      });
+    }
+    if(shouldThrowAgentError) {
+      throw new TRPCError({
+        code: "FORBIDDEN",
+        message: "You have reached the limit of free agents. Please upgrade to a premium plan to create more agents.",
+      });
+    }
+
+    return next({ctx:{ ...ctx,customer}})
+
+});
+
+// basically we have made a premiumProcedure which checks if the user has reached the limit of free agents or meetings and will throw an error if the limit is reached

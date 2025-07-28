@@ -22,7 +22,7 @@ import { streamChat } from "@/lib/stream-chat";
 export const meetingsRouter = createTRPCRouter({
 
 
-
+// before using the chat , users needs to be in the stream backend, so we will upsert the user in the stream backend
   generateChatToken: protectedProcedure.mutation(async ({ ctx }) => {
     const token=streamChat.createToken(ctx.auth.user.id)
     await streamChat.upsertUsers([{
@@ -57,12 +57,14 @@ export const meetingsRouter = createTRPCRouter({
         return []
       }
 
+      // as the transcript is in JSONL format, we need to parse it into JSON
       const transcript = await fetch(existingMeeting.transcriptUrl)
-        .then((res) => res.text())
+        .then((res) => res.text()) //converting into string as jsonl accepts a string
         .then((text) => JSONL.parse<StreamTranscriptItem>(text))
         .catch(() => { return [] });
 
 
+      // unique speaker ids from the transcript
       const speakerIds = [
         ...new Set(transcript.map((item) => item.speaker_id)),
       ];
@@ -100,6 +102,7 @@ export const meetingsRouter = createTRPCRouter({
           const speaker = speakers.find(
             (speaker) => speaker.id === item.speaker_id
           );
+          // if no speaker is found, we return the default speaker with user data
           if (!speaker) {
             return {
               ...item,
@@ -352,6 +355,7 @@ export const meetingsRouter = createTRPCRouter({
 
 
     // Tokens need to be generated server-side thats why we are using a server side client i.e. streamVideo
+    // this will generate a token for the user to store in the steam backend and user token to join the call
     generateToken:protectedProcedure.mutation(async ({ ctx }) => {
         await streamVideo.upsertUsers([{
             id: ctx.auth.user.id,

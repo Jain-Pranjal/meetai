@@ -1,3 +1,5 @@
+// This is the server code only that the webhook will bring and execute the function based on the event that is triggered by the Stream Video service.
+
 import {
     CallEndedEvent,
     CallTranscriptionReadyEvent,
@@ -28,9 +30,8 @@ function verifySignatureWithSDK(body: string, signature: string) :boolean{
     return streamVideo.verifyWebhook(body, signature);
 }
 
-
-// we will send the POST req to the webhook URL that will eventually send the data to the stream backend where the actual event functions are there as this route is being registered in the stream video dashboard as a webhook url :-/api/webhook.
-// passing all the data to the webhook URL so that it can be processed by the stream backend and the event functions can be triggered accordingly.
+// the stream dashboard will send the post req to the webhook URL with the event data and the signature and in this code the fucntion will be executed based on the event type that is received in the payload.
+// the webhook url will carry the data to the backend and according to that data we will execute the function based on the event type that is received in the payload.
 
 export async function POST(req: NextRequest) {
     const signature = req.headers.get("x-signature") ;
@@ -46,15 +47,20 @@ export async function POST(req: NextRequest) {
     }
 
 
+    // this payload data is coming in the body of the request that is sent by the Stream Video service via webhookURL
     let payload:unknown;
     try {
         // parsing the body(req data) to JSON
         payload = JSON.parse(body) as Record<string, unknown>;
+        // console.log("Received webhook event:", payload);
     } catch (error) {
         return NextResponse.json({error: "Invalid JSON"}, {status: 400});
     }
 
     const eventType = (payload as Record<string, unknown>)?.type;   //fetching the event type from the payload
+    // console.log("Event type:", eventType);
+
+
 
     if(eventType==="call.session_started") {
         const event = payload as CallSessionStartedEvent;
@@ -70,12 +76,13 @@ export async function POST(req: NextRequest) {
             not(eq(meetings.status, "active")),
             not(eq(meetings.status, "processing")),
             not(eq(meetings.status, "cancelled"))
-        )) //we wannt status to be only upcoming
+        )) //we want status to be only upcoming
 
         if(!existingMeeting) {
             return NextResponse.json({error: "Meeting not found"}, {status: 404});
         }
 
+        // so session started means the meeting is now active
         await db
         .update(meetings)
         .set({
@@ -85,17 +92,20 @@ export async function POST(req: NextRequest) {
         .where(eq(meetings.id, meetingId));
 
 
+        // when the session start of the call we will connect the agent to the call
+
         const [existingAgent] = await db.select().from(agents).where(eq(agents.id, existingMeeting.agentId));
 
         if(!existingAgent) {
             return NextResponse.json({error: "Agent not found"}, {status: 404});
         }
 
-        // creating a call for the agent to join the call
+        // creating a call instance for the agent to join the call
         const call = streamVideo.video.call("default",meetingId);
 
 
-        // adding agent 
+        // Basically making the agent as the AI agent and joining the call
+        // the connectOpenAi function will automatically join the call 
         const realTimeClient=await streamVideo.video.connectOpenAi({
         call,
         openAiApiKey:process.env.OPENAI_API_KEY!,
@@ -115,7 +125,7 @@ export async function POST(req: NextRequest) {
         }
 
         const call=streamVideo.video.call("default",meetingId);
-        await call.end();
+        await call.end();  //as a failsafe to end the call if the participant left
 
     } else if(eventType === "call.session_ended") {
         const event=payload as CallEndedEvent;
@@ -131,9 +141,9 @@ export async function POST(req: NextRequest) {
             status: "processing",
             endedAt: new Date(),
         })
-        .where(eq(meetings.id, meetingId)),
-        eq(meetings.status, "active");
-        
+        .where(and(eq(meetings.id, meetingId),
+        eq(meetings.status, "active")));
+
     }else if (eventType === "call.transcription_ready") {
         const event =payload as CallTranscriptionReadyEvent;
         const meetingId = event.call_cid.split(":")[1];
@@ -150,8 +160,9 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({error: "Meeting not found"}, {status: 404});
         }
 
+        // Implement the inngest background job to summarize the meeting
         await inngest.send({
-            name: "meetings/processing",
+            name: "meetings/processing",  //event name
             data: {
                 meetingId: updatedMeeting.id,
                 transcriptUrl: updatedMeeting.transcriptUrl,
@@ -171,13 +182,15 @@ export async function POST(req: NextRequest) {
         .where(
             eq(meetings.id, meetingId),
         )
+// to trigger these events we need to auto on the transcription and recording in the meeting procedure
 
 
+// CHAT RELATED EVENTS
     }else if(eventType === "message.new") {
         const event = payload as MessageNewEvent;
         const userId=event.user?.id
-        const channelId=event.channel_id;
-        const text=event.message?.text
+        const channelId=event.channel_id;  //uses the same meetingId as channelId
+        const text=event.message?.text //fetching the user message 
 
         if(!userId || !channelId || !text) {
             return NextResponse.json({error: "Missing required fields"}, {status: 400});
@@ -197,6 +210,8 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({error: "Agent not found"}, {status: 404});
         }
 
+
+        // checking if the message is sent by the user only , not the agent
         if(userId!==existingAgent.id) {
         const instructions=`
         You are an AI assistant helping the user revisit a recently completed meeting.
@@ -218,10 +233,11 @@ export async function POST(req: NextRequest) {
         Be concise, helpful, and focus on providing accurate information from the meeting and the ongoing conversation.
         `;
 
+        // creating a channel instance for the meeting(backend)  
+        const channel=streamChat.channel("messaging",channelId);
+        await channel.watch();
 
-      const channel=streamChat.channel("messaging",channelId);
-      await channel.watch();
-
+        // Fetching the last 5 messages from the channel to provide context to the AI
       const previousMessages = channel.state.messages
       .slice(-5)
       .filter((message) => message.text && message.text.trim()!=="")
@@ -230,6 +246,10 @@ export async function POST(req: NextRequest) {
         content: message.text || "",
       }));
 
+
+    //   A list of messages comprising the conversation so far
+    // so for the role of assistant :- instructions+ previous messages
+    // and for the user role :- the text that the user has sent
       const GPTresponse=await openaiClient.chat.completions.create({
         messages:[
             {role: "system", content: instructions},
@@ -250,12 +270,14 @@ export async function POST(req: NextRequest) {
         variant: "botttsNeutral",
     })
 
+    // adding the AI agent to the stream backend
     streamChat.upsertUsers([{ 
         id: existingAgent.id,
         name: existingAgent.name,
         image: avatarURL,
     }])
 
+    // sending the AI response to the channel
     channel.sendMessage({
         text: GPTresponseText,
         user:{

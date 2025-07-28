@@ -61,7 +61,7 @@ export const MeetingForm: React.FC<MeetingFormProps> = ({onSuccess,onCancel,init
         trpc.meetings.create.mutationOptions({
             onSuccess:async(data)=>{
                 await queryClient.invalidateQueries(trpc.meetings.getMany.queryOptions({}));
-                  await queryClient.invalidateQueries(trpc.premium.getFreeUsage.queryOptions());
+                await queryClient.invalidateQueries(trpc.premium.getFreeUsage.queryOptions());
 
             //the data is getting from the success response of the mutation after creating the meeting
                 onSuccess?.(data.id);

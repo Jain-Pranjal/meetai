@@ -23,7 +23,7 @@ export const auth = betterAuth({
     plugins:[
         polar({
             client: polarClient,
-            createCustomerOnSignUp: true,
+            createCustomerOnSignUp: true, //automatically creates Polar customers when users sign up
             use:[
                 checkout({
                     authenticatedUsersOnly: true,
@@ -43,3 +43,8 @@ export const auth = betterAuth({
         schema: FullSchema, 
     })
 });
+
+
+/*
+1. Users authenticate through Better Auth
+2. When they sign up, a corresponding Polar customer is automatically created */

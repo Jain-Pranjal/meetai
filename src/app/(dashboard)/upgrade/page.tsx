@@ -25,7 +25,7 @@ const Page = async () => {
     const queryClient = getQueryClient();
 
     void queryClient.prefetchQuery(
-        trpc.premium.getFreeUsage.queryOptions()
+        trpc.premium.getCurrentSubscription.queryOptions()
     );
 
     void queryClient.prefetchQuery(

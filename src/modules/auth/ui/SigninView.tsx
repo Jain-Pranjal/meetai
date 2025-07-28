@@ -1,7 +1,7 @@
 // this is the component for the signin view CLIENT COMPONENT
 "use client"
 import React from 'react'
-import {set, z} from 'zod'
+import {z} from 'zod'
 import {zodResolver} from '@hookform/resolvers/zod'
 import {useForm} from 'react-hook-form'
 import { Button } from "@/components/ui/button"
@@ -15,7 +15,6 @@ import { toast } from "sonner"
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -33,6 +32,7 @@ const formSchema = z.object({
 const SigninView = () => {
 
   const router = useRouter()
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [error, setError] = useState<string | null>(null)
   const [pending, setPending] = useState(false)
 
@@ -199,7 +199,7 @@ const onSocial = (provider: "github" | "google") => {
 
           <div className="mt-4 text-center">
             <p className="text-sm text-muted-foreground">
-              Don't have an account?{" "}
+              Don&apos;t have an account?{" "}
               <Link href="/sign-up" className="text-primary hover:underline">
                 Sign up here
               </Link>

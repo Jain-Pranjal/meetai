@@ -53,6 +53,7 @@ export async function POST(req: NextRequest) {
         // parsing the body(req data) to JSON
         payload = JSON.parse(body) as Record<string, unknown>;
         // console.log("Received webhook event:", payload);
+         // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
         return NextResponse.json({error: "Invalid JSON"}, {status: 400});
     }

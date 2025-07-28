@@ -4,7 +4,6 @@
 
 import {
 Call,
-CallControls,
 CallingState,
 StreamCall,
 StreamVideo,

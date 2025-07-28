@@ -4,9 +4,7 @@ import type { Channel as StreamChannel } from "stream-chat";
 import {
   Chat,
   Channel,
-  ChannelList,
   Window,
-  ChannelHeader,
   MessageList,
   MessageInput,
   Thread,
@@ -16,11 +14,10 @@ import { useTRPC } from "@/trpc/client";
 import { Loading } from "@/components/Loading";
 import "stream-chat-react/dist/css/v2/index.css";
 import { EmojiPicker } from 'stream-chat-react/emojis';
-import { init, SearchIndex } from "emoji-mart";
+import {  SearchIndex } from "emoji-mart";
 
 interface Props {
   meetingId: string;
-  meetingName: string;
   userId: string;
   userName: string;
   userImage: string | undefined;
@@ -28,7 +25,6 @@ interface Props {
 
 export const ChatUI = ({
   meetingId,
-  meetingName,
   userId,
   userName,
   userImage,

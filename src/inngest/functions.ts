@@ -3,7 +3,7 @@ import { StreamTranscriptItem } from "@/modules/meetings/types";
 import JSONL from "jsonl-parse-stringify";
 import { db } from "@/db";
 import { agents, user ,meetings} from "@/db/schema";
-import { and, eq, inArray } from "drizzle-orm";
+import {  eq, inArray } from "drizzle-orm";
 import { createAgent, openai, TextMessage } from "@inngest/agent-kit";
 
 // we have to send the data:{transcriptUrl . meetingId} to this component

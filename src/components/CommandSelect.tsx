@@ -2,9 +2,7 @@
 
 import React, { useState } from "react";
 import {
-  Command,
   CommandEmpty,
-  CommandGroup,
   CommandInput,
   CommandItem,
   CommandResponsiveDialog,

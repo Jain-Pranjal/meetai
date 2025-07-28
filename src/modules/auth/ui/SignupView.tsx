@@ -16,7 +16,6 @@ import { toast } from "sonner"
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -39,6 +38,7 @@ const formSchema = z.object({
 const SignupView = () => {
 
   const router = useRouter()
+   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [error, setError] = useState<string | null>(null)
   const [pending, setPending] = useState(false)
 

@@ -3,7 +3,6 @@ import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import { getQueryClient, trpc } from "@/trpc/server";
 import { dehydrate, HydrationBoundary } from '@tanstack/react-query'
-import { ErrorBoundary } from "react-error-boundary";
 import { CallView } from "@/modules/call/ui/views/CallView";
 
 

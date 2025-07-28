@@ -5,7 +5,6 @@ import { ColumnDef } from "@tanstack/react-table";
 import { MeetingGetMany } from "../../types";
 import { generatedAvatar } from "@/components/generated-avatar";
 import { Badge } from "@/components/ui/badge";
-import humanizeDuration from "humanize-duration";
 import { format } from "date-fns";
 import { CircleCheckIcon,CircleXIcon,ClockArrowUpIcon,ClockFadingIcon,CornerDownRightIcon,LoaderIcon } from "lucide-react";
 import { cn } from "@/lib/utils";

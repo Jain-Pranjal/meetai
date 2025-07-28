@@ -19,7 +19,7 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Avatar, AvatarImage } from "@/components/ui/avatar"
 import { generatedAvatar } from '@/components/generated-avatar'
 import { ChevronDown, CreditCardIcon, LogOutIcon } from 'lucide-react'
 import { useRouter } from 'next/navigation'

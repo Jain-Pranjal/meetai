@@ -65,7 +65,7 @@ export const CompletedState = ({ data }: props) => {
 
 
         <TabsContent value="chat">
-          <ChatProvider meetingId={data.id} meetingName={data.name} />
+          <ChatProvider meetingId={data.id} />
         </TabsContent>
 
         <TabsContent value="transcript">

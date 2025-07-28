@@ -1,6 +1,5 @@
 import { LogInIcon } from "lucide-react";
 import {
-  useConnectedUser,
   ToggleAudioPreviewButton,
   useCallStateHooks,
   DefaultVideoPlaceholder,

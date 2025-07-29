@@ -117,3 +117,11 @@ the stream dashboard has the webhookurl that send to the server. jab bhi apaka k
 - initially i dont have any limit so user can make unlimited meet and agents but i have set the limit for the free one so if user buy any sub then limit will be removed and user can make unlimited meet and agents.
 
 
+
+## deployement 
+- deploy on vercel and get the domaain
+- add the domain to stream webhook url
+- add the domain to github login (homepage url and callback url)
+- add the domain to google login (authorized redirect uri and authorised domaion (branding) and javaScript origins)
+- connect inngest to the vercel project by removeing the protection 
+- basically we need to copy the vercel bypass automation and then paste it in the inngest project and then it will connect the inngest to the vercel project. Add the key in deployment protection key

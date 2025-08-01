@@ -21,6 +21,7 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
+import { EyeIcon, EyeOffIcon } from "lucide-react"
 
 
 const formSchema = z.object({
@@ -31,10 +32,12 @@ const formSchema = z.object({
 
 const SigninView = () => {
 
-  const router = useRouter()
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [error, setError] = useState<string | null>(null)
   const [pending, setPending] = useState(false)
+  const [showPassword, setShowPassword] = useState(false)
+  const router = useRouter()
+
 
 
 
@@ -138,25 +141,50 @@ const onSocial = (provider: "github" | "google") => {
               </FormControl>
               <FormMessage />
             </FormItem>
-          )}
-        />
+            )}
+            />
 
-        <FormField
-          control={form.control}
-          name="password"
-          render={({ field }) => (
+            <FormField
+            control={form.control}
+            name="password"
+            render={({ field }) => (
             <FormItem>
               <FormLabel>Password</FormLabel>
               <FormControl>
-                <Input type="password" placeholder="Enter your password" {...field} />
+              <div className="relative">
+                <Input 
+                type={showPassword ? "text" : "password"} 
+                placeholder="Enter your password" 
+                {...field} 
+                className="pr-10"
+                />
+                <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                onClick={() => setShowPassword(!showPassword)}
+                >
+                {showPassword ? (
+                  <EyeIcon className="h-4 w-4" />
+                ) : (
+                  <EyeOffIcon className="h-4 w-4" />
+                )}
+                </Button>
+              </div>
               </FormControl>
+              <div className="flex justify-end">
+              <Link href="/forgotPassword" className="text-sm text-primary hover:underline">
+              Forgot your password?
+              </Link>
+              </div>
               <FormMessage />
             </FormItem>
-          )}
-        />
+            )}
+            />
 
         <div className="flex justify-center">
-          <Button type="submit" className="w-full sm:w-40" disabled={pending}>Sign In</Button>
+          <Button type="submit" className="w-full " disabled={pending}>Sign In</Button>
         </div>
 
 

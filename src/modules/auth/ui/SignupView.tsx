@@ -12,6 +12,7 @@ import { authClient } from '@/lib/auth-client'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { toast } from "sonner"
+import { EyeIcon, EyeOffIcon } from "lucide-react"
 
 import {
   Form,
@@ -41,6 +42,7 @@ const SignupView = () => {
    // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [error, setError] = useState<string | null>(null)
   const [pending, setPending] = useState(false)
+  const [showPassword, setShowPassword] = useState(false)
 
 
 
@@ -73,10 +75,11 @@ const SignupView = () => {
           id: "signup",
           duration: Infinity,
         });
+        form.reset(); // Clear the form inputs
       },
       onSuccess: () => {
         setPending(false);
-        toast.success("Signed up successfully", {
+        toast.success("Please check your email to verify your account", {
           id: "signup",
           duration: 5000,
         });
@@ -160,27 +163,48 @@ const SignupView = () => {
               </FormControl>
               <FormMessage />
             </FormItem>
-          )}
-        />
+            )}
+          />
 
 
-        <FormField
-          control={form.control}
-          name="password"
-          render={({ field }) => (
+          <FormField
+            control={form.control}
+            name="password"
+            render={({ field }) => (
             <FormItem>
               <FormLabel>Password</FormLabel>
               <FormControl>
-                <Input type="password" placeholder="******" {...field} />
+              <div className="relative">
+                <Input 
+                type={showPassword ? "text" : "password"} 
+                placeholder="******" 
+                {...field} 
+                />
+                <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                onClick={() => setShowPassword(!showPassword)}
+                >
+                {showPassword ? (
+                  <EyeIcon className="h-4 w-4" />
+                ) : (
+                  <EyeOffIcon className="h-4 w-4" />
+                )}
+                </Button>
+              </div>
               </FormControl>
               <FormMessage />
             </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="confirmPassword"
-          render={({ field }) => (
+            )}
+          />
+
+          
+          <FormField
+            control={form.control}
+            name="confirmPassword"
+            render={({ field }) => (
             <FormItem>
               <FormLabel>Confirm Password</FormLabel>
               <FormControl>
@@ -192,7 +216,7 @@ const SignupView = () => {
         />
 
         <div className="flex justify-center">
-          <Button type="submit" className="w-full sm:w-40" disabled={pending}>Sign Up</Button>
+          <Button type="submit" className="w-full" disabled={pending}>Sign Up</Button>
         </div>
 
 

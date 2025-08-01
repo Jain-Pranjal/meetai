@@ -5,7 +5,6 @@ import { db } from "@/db"; // your drizzle instance
 import { FullSchema } from "@/db/schema"; // your schema definition
 import {polar,checkout,portal} from "@polar-sh/better-auth" 
 import { polarClient } from "./polar";
-import { Resend } from "resend";
 import VerifyEmail from "@/components/emails/verify-email";
 import ForgotPasswordEmail from "@/components/emails/reset-password";
 import { resend } from "@/lib/resend"; 

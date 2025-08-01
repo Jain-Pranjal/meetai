@@ -43,14 +43,6 @@ export function ResetPasswordForm({
 }: React.ComponentProps<"div">) {
   const searchParams = useSearchParams();
   const router = useRouter();
-
-  const token = searchParams.get("token") as string;  //getting the token from the URL
-  if (!token) {
-    toast.error("Invalid or missing token");
-    router.push("/sign-in");
-    return null;
-  }
-
   const [isLoading, setIsLoading] = useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -60,6 +52,13 @@ export function ResetPasswordForm({
       confirmPassword: "",
     },
   });
+
+  const token = searchParams.get("token") as string;  //getting the token from the URL
+  if (!token) {
+    toast.error("Invalid or missing token");
+    router.push("/sign-in");
+    return null;
+  }
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsLoading(true);

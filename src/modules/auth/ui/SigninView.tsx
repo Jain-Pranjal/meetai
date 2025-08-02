@@ -10,7 +10,7 @@ import { FcGoogle } from "react-icons/fc";
 import Link from 'next/link'
 import { authClient } from '@/lib/auth-client'
 import { useRouter } from 'next/navigation'
-import { useState } from 'react'
+import { useState , useEffect} from 'react'
 import { toast } from "sonner"
 import {
   Form,
@@ -37,6 +37,7 @@ const SigninView = () => {
   const [pending, setPending] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
   const router = useRouter()
+  const session = authClient.useSession().data;  //client side session data
 
 
 
@@ -49,6 +50,54 @@ const SigninView = () => {
       password: '',
     },
   }) 
+
+
+
+  // One Tap Auto-trigger
+  useEffect(() => {
+    if (session) {
+      router.replace("/"); // already signed in
+      return;
+    }
+
+    authClient.oneTap(
+      {
+        context: "signin", 
+        onPromptNotification: (info) => {
+          console.warn("One Tap prompt skipped:", info);  //can display the render an alternative UI 
+
+        },
+      },
+      {
+        onRequest: () => {
+          setPending(true);
+          toast.loading("Signing in Google...", {
+            id: "onetap",
+            duration: Infinity,
+          });
+        },
+        onSuccess: () => {
+          setPending(false);
+          toast.success("Signed in with Google", {
+            id: "onetap",
+            duration: 5000,
+          });
+          router.push("/");
+        },
+        onError: ({ error }) => {
+          setPending(false);
+          const errorMessage = error?.message || error?.error?.message || "One Tap sign-in failed";
+          setError(errorMessage);
+          toast.error(errorMessage, {
+            id: "onetap",
+            duration: 5000,
+          });
+        },
+      }
+    ).catch((err) => {
+      console.error("One Tap init failed:", err);
+    });
+    }, [session, router]);
 
 
   // this is taken from better-auth library

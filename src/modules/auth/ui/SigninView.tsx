@@ -144,7 +144,7 @@ const onSocial = (provider: "github" | "google") => {
 
   authClient.signIn.social({
       provider: provider,
-      callbackURL: "/",
+      callbackURL: "/?social_signin=true",
     },
     {
       onRequest: () => {
@@ -156,10 +156,6 @@ const onSocial = (provider: "github" | "google") => {
       },
       onSuccess: () => {
         setPending(false);
-        toast.success("Signed in successfully", {
-          id: "signin",
-          duration: 5000,
-        });
       },
       onError: ({ error }) => {
         setPending(false);

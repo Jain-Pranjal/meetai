@@ -7,15 +7,39 @@ import { Error } from "@/components/ErrorState";
 import { DataTable } from "@/components/DataTable";
 import {columns} from "@/modules/meetings/ui/components/Columns";
 import { EmptyState } from "@/components/EmptyState";
-import { useRouter } from "next/navigation";
 import { useMeetingsFilter } from "../../hooks/use-meetings-filter";
 import { DataPagination } from "@/components/DataPagination";
+import { useEffect } from "react";
+import { toast } from "sonner";
+import { useSearchParams, useRouter } from "next/navigation";
+
 
 export const MeetingsView=()=>{
 
     const trpc= useTRPC();
     const router=useRouter();
+    const searchParams = useSearchParams();  // useSearchParams is a hook that returns the current URL search parameters
     const [filters, setFilters] =useMeetingsFilter();
+
+
+
+    useEffect(() => {
+        const isSocialSignIn = searchParams.get("social_signin");
+
+        if (isSocialSignIn) {
+            toast.success("Signed in successfully!", {
+            id: "social-signin-success",
+            duration: 5000,
+        });
+
+        // ✅ Clean the URL: remove ?social_signin=true
+        const url = new URL(window.location.href);
+        url.searchParams.delete("social_signin");
+        router.replace(url.pathname); // Keeps you on same page, cleans URL
+        }
+    }, [searchParams, router]);
+
+
 
 
     const { data } = useSuspenseQuery(

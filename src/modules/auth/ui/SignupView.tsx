@@ -104,7 +104,7 @@ const SignupView = () => {
 
   authClient.signIn.social({
       provider: provider,
-      callbackURL: "/",
+      callbackURL: "/?social_signin=true",
     },
     {
       onRequest: () => {
@@ -116,10 +116,6 @@ const SignupView = () => {
       },
       onSuccess: () => {
         setPending(false);
-        toast.success("Signed up successfully", {
-          id: "signup",
-          duration: 5000,
-        });
       },
       onError: ({ error }) => {
         setPending(false);

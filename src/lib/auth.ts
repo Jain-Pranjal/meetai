@@ -9,6 +9,7 @@ import VerifyEmail from "@/components/emails/verify-email";
 import ForgotPasswordEmail from "@/components/emails/reset-password";
 import { resend } from "@/lib/resend"; 
 import { oneTap } from "better-auth/plugins"; 
+import { haveIBeenPwned } from "better-auth/plugins"
 
 
 
@@ -60,6 +61,9 @@ export const auth = betterAuth({
         oneTap(), 
         // by default disableSignup is false 
         // Setting disableSignUp: true on the plugin will disable new account creation: One Tap will only allow sign‑in for existing users, and return an error for unknown emails
+
+        haveIBeenPwned({customPasswordCompromisedMessage: "Your password has been compromised in a data breach. Please choose a different password."})
+        // this plugin will check if the email has been compromised in a data breach
     ],
 
     emailAndPassword: {  

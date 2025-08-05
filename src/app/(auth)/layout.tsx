@@ -1,6 +1,5 @@
 import { ReactNode } from "react";
 import Image from "next/image";
-import Link from "next/link";
 
 interface AuthLayoutProps {
   children: ReactNode;
@@ -12,7 +11,6 @@ export default function AuthLayout({ children }: AuthLayoutProps) {
       {/* Left side - Branding/Logo */}
       <div className="bg-primary md:w-1/2 p-6 md:p-10 flex flex-col">
         <div className="flex flex-col items-center justify-center h-full">
-          <Link href="/" className="inline-block">
         <Image
           src="/appLogo.svg"
           alt="MeetAI Logo"
@@ -21,7 +19,6 @@ export default function AuthLayout({ children }: AuthLayoutProps) {
           className="mb-8"
           priority
         />
-          </Link>
           <div className="text-center mt-6">
         <h1 className="text-2xl md:text-4xl font-bold text-white">
           Welcome to MeetAI

@@ -18,6 +18,7 @@ export default function AuthLayout({ children }: AuthLayoutProps) {
           height={40}
           className="mb-8"
           priority
+          draggable="false"
         />
           <div className="text-center mt-6">
         <h1 className="text-2xl md:text-4xl font-bold text-white">

@@ -125,3 +125,22 @@ the stream dashboard has the webhookurl that send to the server. jab bhi apaka k
 - add the domain to google login (authorized redirect uri and authorised domaion (branding) and javaScript origins)
 - connect inngest to the vercel project by removeing the protection 
 - basically we need to copy the vercel bypass automation and then paste it in the inngest project and then it will connect the inngest to the vercel project. Add the key in deployment protection key
+
+
+
+## Docker Setup
+- if we just change the code in host machine then it will reflect in the container as well as we have mounted the volume. .:/app 
+- but if we **change the dependencies** then we need to **rebuild** the image and then run the container again. 
+```bash
+docker-compose -f docker-compose.dev.yml up --build
+
+# the --build flag is used to rebuild the image if there is any change in the dependencies.
+```
+
+Workflow
+
+First time: container build → node_modules install → named volume me store ho gaya.
+
+Code changes: no rebuild needed (bind mount code sync karega).
+
+New dependency: docker compose up --build → fresh install → named volume overwrite ho jata hai.

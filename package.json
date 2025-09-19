@@ -10,7 +10,13 @@
     "rebase": "git pull && git checkout master && git pull && git rebase dev && git push && git checkout dev",
     "db:push": "npx drizzle-kit push",
     "db:studio": "npx drizzle-kit studio",
-    "dev:webhook": "ngrok http --url=physically-unified-minnow.ngrok-free.app 3000"
+    "dev:webhook": "ngrok http --url=physically-unified-minnow.ngrok-free.app 3000",
+    "docker:dev": "docker-compose -f docker-compose.dev.yml up --build",
+    "docker:dev:down": "docker-compose -f docker-compose.dev.yml down",
+    "docker:prod": "docker-compose -f docker-compose.prod.yml up --build",
+    "docker:prod:down": "docker-compose -f docker-compose.prod.yml down",
+    "docker:build:dev": "docker build -f docker/local.dockerfile -t meetai-dev .",
+    "docker:build:prod": "docker build -f docker/prod.dockerfile -t meetai-prod ."
   },
   "dependencies": {
     "@dicebear/collection": "^9.2.2",

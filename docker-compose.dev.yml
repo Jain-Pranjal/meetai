@@ -1,0 +1,32 @@
+version: "3.8"
+
+services:
+  meetai-dev:
+    build:
+      context: .
+      dockerfile: docker/local.dockerfile
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/app
+      - node_modules_cache:/app/node_modules
+    environment:
+      - NODE_ENV=development
+    env_file:
+      - .env.local
+    restart: unless-stopped
+
+volumes:
+  node_modules_cache:
+
+
+# to run this file use
+# docker:dev 
+
+# to down the compose 
+# docker:dev:down
+
+# so basically in dev we have used the mount volumes so that the node_modules will always get persisted even if we restart the container and also the code changes will be reflected live without rebuilding the image and if we have new dependencies we can just run rhe conntaineer again with --build to install the new dependencies and then vo aapki node modules bhi update ho jayegi and code bhi update ho jayega
+
+
+# so in here we use the bind volumen to map the code from host to container so that we can get the live reloading and not copy the whole source code otherwise if we have chnages we need to build the image again and again which is not good for development

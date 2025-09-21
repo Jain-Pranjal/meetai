@@ -8,6 +8,7 @@ pnpm-debug.log*
 # Local env files (keep production ones if needed)
 .env*.local
 .env
+.env.production
 
 # Vercel
 .vercel

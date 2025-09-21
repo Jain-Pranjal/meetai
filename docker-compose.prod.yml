@@ -5,6 +5,7 @@ services:
     build:
       context: .
       dockerfile: docker/prod.dockerfile
+    image: jain-pranjal/meetai:latest
     ports:
       - "3000:3000"
     environment:

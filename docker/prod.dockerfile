@@ -8,6 +8,7 @@ COPY package.json pnpm-lock.yaml* ./
 RUN pnpm install --frozen-lockfile
 
 COPY . .
+ENV NODE_ENV=production
 RUN pnpm run build
 
 # --- Stage 2: Final Image ---
@@ -17,12 +18,15 @@ RUN npm install -g pnpm
 WORKDIR /app
 
 COPY package.json pnpm-lock.yaml* ./
-RUN pnpm install --prod --frozen-lockfile
+
+# download only production dependencies
+RUN pnpm install --prod --frozen-lockfile 
 
 COPY --from=builder /app/.next ./.next
 COPY --from=builder /app/public ./public
-COPY --from=builder /app/next.config.mjs ./next.config.mjs
+COPY --from=builder /app/next.config.mjs ./
 
+ENV NODE_ENV=production
 EXPOSE 3000
 CMD ["pnpm", "start"]
 

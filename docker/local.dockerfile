@@ -27,5 +27,3 @@ CMD ["pnpm", "run", "dev"]
 
 # we dont need the COPY . . line in the devlopment Dockerfile because in a development environment, we typically want to mount the source code from the host machine into the container using Docker volumes. This allows for hot reloading and immediate reflection of code changes without needing to rebuild the Docker image each time a change is made.
 
-
-
